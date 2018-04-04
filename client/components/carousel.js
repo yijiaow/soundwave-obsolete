@@ -70,9 +70,9 @@ export class Carousel extends Component {
         : this.state.activeIndex + 1
     this.setState({ activeIndex: next })
   }
-  // componentDidMount() {
-  //   this.timerID = setInterval(() => this.slideToNext(), 2500)
-  // }
+  componentDidMount() {
+    this.timerID = setInterval(() => this.slideToNext(), 2500)
+  }
   pause() {
     clearInterval(this.timerID)
   }
