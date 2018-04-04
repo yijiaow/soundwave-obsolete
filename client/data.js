@@ -5,7 +5,7 @@ export default [
     region: '',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/coachella.jpg'
+    imageSrc: './images/coachella.jpg'
   },
   {
     title: 'Sasquatch!',
@@ -13,7 +13,7 @@ export default [
     region: 'George, WA',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/sasquatch.jpeg'
+    imageSrc: './images/sasquatch.jpeg'
   },
   {
     title: 'Electric Daisy Carnival',
@@ -21,7 +21,7 @@ export default [
     region: 'Las Vegas, NV',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/edc.jpg'
+    imageSrc: './images/edc.jpg'
   },
   {
     title: 'Bonnaroo',
@@ -29,7 +29,7 @@ export default [
     region: 'Manchester, TN',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/bonnaroo.jpeg'
+    imageSrc: './images/bonnaroo.jpeg'
   },
   {
     title: 'Newport Jazz',
@@ -37,7 +37,7 @@ export default [
     region: 'Newport, RI',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/newport-jazz.jpeg'
+    imageSrc: './images/newport-jazz.jpeg'
   },
   {
     title: 'Governors Ball',
@@ -45,7 +45,7 @@ export default [
     region: 'New York, NY',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/governors-ball.jpeg'
+    imageSrc: './images/governors-ball.jpeg'
   },
   {
     title: 'Firefly',
@@ -53,6 +53,6 @@ export default [
     region: 'Dover, DE',
     genre: '',
     description: '',
-    imageSrc: 'http://localhost:3000/images/firefly.jpeg'
+    imageSrc: './images/firefly.jpeg'
   }
 ]
