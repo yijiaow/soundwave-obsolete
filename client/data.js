@@ -1,4 +1,4 @@
-export const festivals = [
+export default [
   {
     title: 'Coachella',
     dateRange: 'April 13-15 & April 20-22, 2018',

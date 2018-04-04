@@ -4,6 +4,9 @@ import AppBar from 'material-ui/AppBar'
 import { Form } from './form.js'
 import { FormDropdown } from './dropdown.js'
 import { Events } from './events.js'
+import { Carousel } from './carousel.js'
+
+import festivals from '../data.js'
 
 const serialize = obj => {
   const queries = []
@@ -73,6 +76,7 @@ export class Controller extends Component {
             onFormChange={this.handleFormChange}
           />
         </AppBar>
+        <Carousel festivals={festivals} />
         <Events events={this.state.searchResults} />
       </div>
     )

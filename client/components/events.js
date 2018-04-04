@@ -8,12 +8,15 @@ const styles = {
   root: {
     display: 'flex',
     justifyContent: 'center'
+  },
+  list: {
+    width: 840
   }
 }
 export const Events = props => {
   return (
     <div style={styles.root}>
-      <List>
+      <List style={styles.list}>
         {props.events.map(event => (
           <ListItem key={event.id}>
             <Card>

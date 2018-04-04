@@ -6,22 +6,26 @@ import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-rig
 
 const styles = {
   root: {
-    width: 900,
-    height: 500
+    position: 'relative',
+    width: 1200,
+    height: 400,
+    marginTop: 50,
+    marginLeft: 'auto',
+    marginRight: 'auto'
   },
   middleSlide: {
     position: 'absolute',
-    left: 200,
+    left: 300,
     zIndex: 1
   },
   leftSlide: {
     position: 'absolute',
-    left: 50,
+    left: 0,
     zIndex: 0
   },
   rightSlide: {
     position: 'absolute',
-    right: 50,
+    right: 0,
     zIndex: -1
   },
   image: {
@@ -31,13 +35,13 @@ const styles = {
   leftArrow: {
     position: 'absolute',
     top: 180,
-    left: 220,
+    left: 320,
     zIndex: 10
   },
   rightArrow: {
     position: 'absolute',
     top: 180,
-    right: 220,
+    right: 320,
     zIndex: 10
   }
 }
@@ -66,9 +70,9 @@ export class Carousel extends Component {
         : this.state.activeIndex + 1
     this.setState({ activeIndex: next })
   }
-  componentDidMount() {
-    this.timerID = setInterval(() => this.slideToNext(), 2500)
-  }
+  // componentDidMount() {
+  //   this.timerID = setInterval(() => this.slideToNext(), 2500)
+  // }
   pause() {
     clearInterval(this.timerID)
   }
