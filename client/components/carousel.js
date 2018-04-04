@@ -46,8 +46,11 @@ export class Carousel extends Component {
   constructor(props) {
     super(props)
     this.state = { activeIndex: 0 }
+    this.timerID = null
     this.slideToPrev = this.slideToPrev.bind(this)
     this.slideToNext = this.slideToNext.bind(this)
+    this.pause = this.pause.bind(this)
+    this.resume = this.resume.bind(this)
   }
   slideToPrev() {
     const prev =
@@ -63,6 +66,15 @@ export class Carousel extends Component {
         : this.state.activeIndex + 1
     this.setState({ activeIndex: next })
   }
+  componentDidMount() {
+    this.timerID = setInterval(() => this.slideToNext(), 2500)
+  }
+  pause() {
+    clearInterval(this.timerID)
+  }
+  resume() {
+    this.timerID = setInterval(() => this.slideToNext(), 2500)
+  }
   render() {
     const slides = this.props.festivals
     const curr = this.state.activeIndex
@@ -70,7 +82,11 @@ export class Carousel extends Component {
     const next = curr >= slides.length - 1 ? 0 : curr + 1
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
     return (
-      <div style={styles.root}>
+      <div
+        style={styles.root}
+        onMouseOver={this.pause}
+        onMouseOut={this.resume}
+      >
         <NavigationChevronLeft
           style={styles.leftArrow}
           onClick={this.slideToPrev}
