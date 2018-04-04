@@ -1,23 +1,25 @@
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
 import { CardMedia, CardTitle } from 'material-ui/Card'
+import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left'
+import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
 
 const styles = {
   root: {
     width: 900,
     height: 500
   },
-  middle: {
+  middleSlide: {
     position: 'absolute',
     left: 200,
     zIndex: 1
   },
-  left: {
+  leftSlide: {
     position: 'absolute',
     left: 50,
     zIndex: 0
   },
-  right: {
+  rightSlide: {
     position: 'absolute',
     right: 50,
     zIndex: -1
@@ -25,12 +27,41 @@ const styles = {
   image: {
     width: 600,
     height: 400
+  },
+  leftArrow: {
+    position: 'absolute',
+    top: 180,
+    left: 220,
+    zIndex: 10
+  },
+  rightArrow: {
+    position: 'absolute',
+    top: 180,
+    right: 220,
+    zIndex: 10
   }
 }
 
 export class Carousel extends Component {
   constructor(props) {
     super(props)
+    this.state = { activeIndex: 0 }
+    this.slideToPrev = this.slideToPrev.bind(this)
+    this.slideToNext = this.slideToNext.bind(this)
+  }
+  slideToPrev() {
+    const prev =
+      this.state.activeIndex <= 0
+        ? this.props.festivals.length - 1
+        : this.state.activeIndex - 1
+    this.setState({ activeIndex: prev })
+  }
+  slideToNext() {
+    const next =
+      this.state.activeIndex >= this.props.festivals.length - 1
+        ? 0
+        : this.state.activeIndex + 1
+    this.setState({ activeIndex: next })
   }
   render() {
     const slides = this.props.festivals
@@ -40,7 +71,11 @@ export class Carousel extends Component {
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
     return (
       <div style={styles.root}>
-        <Paper key={prev} style={styles.left} zDepth={5}>
+        <NavigationChevronLeft
+          style={styles.leftArrow}
+          onClick={this.slideToPrev}
+        />
+        <Paper key={prev} style={styles.leftSlide} zDepth={5}>
           <CardMedia
             overlay={
               <CardTitle
@@ -52,7 +87,7 @@ export class Carousel extends Component {
             <img src={displaySlides[0].imageSrc} style={styles.image} />
           </CardMedia>
         </Paper>
-        <Paper key={curr} style={styles.middle} zDepth={5}>
+        <Paper key={curr} style={styles.middleSlide} zDepth={5}>
           <CardMedia
             overlay={
               <CardTitle
@@ -64,7 +99,7 @@ export class Carousel extends Component {
             <img src={displaySlides[1].imageSrc} style={styles.image} />
           </CardMedia>
         </Paper>
-        <Paper key={next} style={styles.right} zDepth={5}>
+        <Paper key={next} style={styles.rightSlide} zDepth={5}>
           <CardMedia
             overlay={
               <CardTitle
@@ -76,6 +111,10 @@ export class Carousel extends Component {
             <img src={displaySlides[2].imageSrc} style={styles.image} />
           </CardMedia>
         </Paper>
+        <NavigationChevronRight
+          style={styles.rightArrow}
+          onClick={this.slideToNext}
+        />
       </div>
     )
   }
