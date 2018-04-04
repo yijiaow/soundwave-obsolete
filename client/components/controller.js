@@ -3,6 +3,7 @@ import AppBar from 'material-ui/AppBar'
 
 import { Form } from './form.js'
 import { FormDropdown } from './dropdown.js'
+import { Events } from './events.js'
 
 const serialize = obj => {
   const queries = []
@@ -15,9 +16,8 @@ const serialize = obj => {
 export class Controller extends Component {
   constructor(props) {
     super(props)
-    this.searchResults = []
     this.state = {
-      params: { keywords: '', location: 'California' },
+      params: { keyword: '', location: 'Los Angeles' },
       searchResults: [],
       dropdownStatus: { open: false }
     }
@@ -39,7 +39,7 @@ export class Controller extends Component {
     this.setState({ params: paramsCopy })
   }
   handleFormSubmit(name) {
-    if (name === 'keywords') {
+    if (name === 'keyword') {
       this.fetchEvents(serialize(this.state.params))
     }
   }
@@ -47,7 +47,7 @@ export class Controller extends Component {
     fetch(`/events/search?${queryString}`)
       .then(res => res.json())
       .then(data => {
-        this.setState({ searchResults: data.events.event })
+        this.setState({ searchResults: data.events })
       })
       .catch(err => {
         console.log(err)
@@ -58,10 +58,10 @@ export class Controller extends Component {
       <div>
         <AppBar title="SoundWave">
           <Form
-            name="keywords"
+            name="keyword"
             hintText="What are you looking for?"
             btnText="Go!"
-            value={this.state.params.keywords}
+            value={this.state.params.keyword}
             onFormChange={this.handleFormChange}
             onFormSubmit={this.handleFormSubmit}
           />
@@ -73,6 +73,7 @@ export class Controller extends Component {
             onFormChange={this.handleFormChange}
           />
         </AppBar>
+        <Events events={this.state.searchResults} />
       </div>
     )
   }
