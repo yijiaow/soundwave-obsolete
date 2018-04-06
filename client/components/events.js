@@ -1,7 +1,6 @@
 import React from 'react'
 import { List, ListItem } from 'material-ui/List'
 import { Card, CardHeader, CardText } from 'material-ui/Card'
-import Subheader from 'material-ui/Subheader'
 import Divider from 'material-ui/Divider'
 
 const styles = {
@@ -14,7 +13,7 @@ const styles = {
   }
 }
 export const Events = props => {
-  return (
+  return props.renderStatus ? (
     <div style={styles.root}>
       <List style={styles.list}>
         {props.events.map(event => (
@@ -37,5 +36,5 @@ export const Events = props => {
         ))}
       </List>
     </div>
-  )
+  ) : null
 }

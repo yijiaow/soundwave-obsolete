@@ -85,7 +85,7 @@ export class Carousel extends Component {
     const prev = curr <= 0 ? slides.length - 1 : curr - 1
     const next = curr >= slides.length - 1 ? 0 : curr + 1
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
-    return (
+    return this.props.renderStatus ? (
       <div
         style={styles.root}
         onMouseOver={this.pause}
@@ -136,6 +136,6 @@ export class Carousel extends Component {
           onClick={this.slideToNext}
         />
       </div>
-    )
+    ) : null
   }
 }
