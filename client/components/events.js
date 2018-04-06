@@ -1,7 +1,6 @@
 import React from 'react'
 import { List, ListItem } from 'material-ui/List'
 import { Card, CardHeader, CardText } from 'material-ui/Card'
-import Subheader from 'material-ui/Subheader'
 import Divider from 'material-ui/Divider'
 
 const styles = {
@@ -14,6 +13,9 @@ const styles = {
   }
 }
 export const Events = props => {
+  if (!props.renderStatus) {
+    return null
+  }
   return (
     <div style={styles.root}>
       <List style={styles.list}>

@@ -85,6 +85,9 @@ export class Carousel extends Component {
     const prev = curr <= 0 ? slides.length - 1 : curr - 1
     const next = curr >= slides.length - 1 ? 0 : curr + 1
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
+    if (!this.props.renderStatus) {
+      return null
+    }
     return (
       <div
         style={styles.root}

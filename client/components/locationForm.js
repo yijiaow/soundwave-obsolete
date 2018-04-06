@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import FlatButton from 'material-ui/FlatButton'
 import Popover, { PopoverAnimationVertical } from 'material-ui/Popover'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
 
-import { Form } from './form.js'
-
-export class FormDropdown extends Component {
+export default class extends Component {
   constructor(props) {
     super(props)
+    this.state = { location: '' }
     this.handleClick = this.handleClick.bind(this)
     this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
   handleClick(event) {
     event.preventDefault()
@@ -16,6 +19,13 @@ export class FormDropdown extends Component {
   }
   handleRequestClose() {
     this.props.onDropdownClose()
+  }
+  handleChange(event) {
+    this.setState({ location: event.target.value })
+  }
+  handleSubmit(event) {
+    event.preventDefault()
+    this.props.updateLocation(this.state)
   }
   render() {
     return (
@@ -32,12 +42,15 @@ export class FormDropdown extends Component {
           onRequestClose={this.handleRequestClose}
           animation={PopoverAnimationVertical}
         >
-          <Form
-            name="location"
-            hintText="Enter City of Zipcode"
-            btnText="Change"
-            onFormChange={this.props.onFormChange}
-          />
+          <form name="location" onSubmit={this.handleSubmit}>
+            <TextField
+              name="location"
+              hintText="Enter City or Zipcode"
+              value={this.state.location}
+              onChange={this.handleChange}
+            />
+            <RaisedButton type="submit" label="Change" primary={true} />
+          </form>
         </Popover>
       </div>
     )
