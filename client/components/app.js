@@ -22,7 +22,7 @@ export class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      params: { location: 'Los Angeles' },
+      params: { city: 'Los Angeles' },
       searchResults: [],
       dropdownStatus: { open: false }
     }
@@ -58,7 +58,13 @@ export class App extends Component {
       <div>
         <AppBar title="SoundWave">
           <KeywordForm search={this.handleSearch} />
-          <LocationForm updateLocation={this.handleLocationUpdate} />
+          <LocationForm
+            updateLocation={this.handleLocationUpdate}
+            onDropdown={this.handleDropdown}
+            onDropdownClose={this.handleDropdownClose}
+            status={this.state.dropdownStatus.open}
+            anchor={this.state.dropdownStatus.anchorEl}
+          />
         </AppBar>
         <Genres genres={genres} search={this.handleSearch} />
         <Carousel
