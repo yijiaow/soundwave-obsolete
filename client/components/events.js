@@ -13,7 +13,10 @@ const styles = {
   }
 }
 export const Events = props => {
-  return props.renderStatus ? (
+  if (!props.renderStatus) {
+    return null
+  }
+  return (
     <div style={styles.root}>
       <List style={styles.list}>
         {props.events.map(event => (
@@ -36,5 +39,5 @@ export const Events = props => {
         ))}
       </List>
     </div>
-  ) : null
+  )
 }
