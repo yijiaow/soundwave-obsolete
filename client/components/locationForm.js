@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import Button from 'material-ui/Button'
-import Popover, { PopoverAnimationVertical } from 'material-ui/Popover'
+import Tooltip from 'material-ui/Tooltip'
 import TextField from 'material-ui/TextField'
 
+const styles = {
+  dropdown: {
+    borderRadius: 10,
+    boxShadow: '0 10 10'
+  }
+}
 export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
       location: '',
-      dropdownStatus: { open: false, anchorEl: null }
+      dropdownOpen: false
     }
     this.handleOpen = this.handleOpen.bind(this)
     this.handleClose = this.handleClose.bind(this)
@@ -17,10 +23,10 @@ export default class extends Component {
   }
   handleOpen(event) {
     event.preventDefault()
-    this.setState({ dropdownStatus: { open: true, anchorEl: event.target } })
+    this.setState({ dropdownOpen: true })
   }
   handleClose() {
-    this.setState({ dropdownStatus: { open: false, anchorEl: null } })
+    this.setState({ dropdownOpen: false })
   }
   handleChange(event) {
     this.setState({ location: event.target.value })
@@ -30,21 +36,20 @@ export default class extends Component {
     this.props.updateLocation(this.state)
   }
   render() {
-    const { open, anchorEl } = this.state.dropdownStatus
     return (
-      <div>
-        <Button color="secondary" variant="flat" onMouseOver={this.handleOpen}>
-          Los Angeles
-        </Button>
-        <Popover
-          open={open}
-          anchorEl={anchorEl}
-          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-          onClose={this.handleClose}
-          animation={PopoverAnimationVertical}
-        >
-          <form name="location" onSubmit={this.handleSubmit}>
+      <Tooltip
+        enterDelay={300}
+        leaveDelay={300}
+        onClose={this.handleClose}
+        onOpen={this.handleOpen}
+        open={this.state.dropdownOpen}
+        placement="bottom"
+        title={
+          <form
+            style={styles.dropdown}
+            name="location"
+            onSubmit={this.handleSubmit}
+          >
             <TextField
               id="location"
               placeholder="Enter City or Zipcode"
@@ -55,8 +60,12 @@ export default class extends Component {
               Change
             </Button>
           </form>
-        </Popover>
-      </div>
+        }
+      >
+        <Button variant="flat" onMouseOver={this.handleOpen}>
+          Los Angeles
+        </Button>
+      </Tooltip>
     )
   }
 }
