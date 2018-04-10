@@ -1,31 +1,29 @@
-import {
-  purple500,
-  purple900,
-  purpleA200,
-  deepPurpleA100,
-  deepPurpleA400,
-  deepPurpleA700,
-  fullWhite
-} from 'material-ui/styles/colors.js'
-import { fade } from 'material-ui/utils/colorManipulator'
+import purple from 'material-ui/colors/purple'
+import deepPurple from 'material-ui/colors/deepPurple'
+import { createMuiTheme } from 'material-ui/styles'
 
-export default {
-  fontFamily: 'Roboto, sans-serif',
-  borderRadius: 5,
+export default createMuiTheme({
   palette: {
-    primary1Color: purple500,
-    primary2Color: purple900,
-    primary3Color: purpleA200,
-    accent1Color: deepPurpleA400,
-    accent2Color: deepPurpleA700,
-    accent3Color: deepPurpleA100,
-    textColor: fullWhite,
-    secondaryTextColor: fade(fullWhite, 0.7),
-    alternateTextColor: '#10021C',
-    canvasColor: '#10021C',
-    borderColor: fade(fullWhite, 0.3),
-    disabledColor: fade(fullWhite, 0.3),
-    pickerHeaderColor: fade(fullWhite, 0.12),
-    clockCirclecolor: fade(fullWhite, 0.12)
+    type: 'dark',
+    primary: {
+      light: purple.A200,
+      main: purple[900],
+      dark: '#38006b',
+      contrastText: '#fff'
+    },
+    secondary: {
+      light: deepPurple.A100,
+      main: deepPurple.A400,
+      dark: deepPurple.A700,
+      contrastText: '#fff'
+    }
+  },
+  typography: {
+    fontFamily: "'Titillium Web', sans-serif",
+    fontWeightLight: 200,
+    fontWeightRegular: 400,
+    display2: {
+      fontWeight: 200
+    }
   }
-}
+})

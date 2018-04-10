@@ -1,15 +1,33 @@
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
-
+import Typography from 'material-ui/Typography'
+import { withStyles } from 'material-ui/styles'
 import KeywordForm from './keywordForm.js'
 import LocationForm from './locationForm.js'
-import { Events } from './events.js'
-import { Carousel } from './carousel.js'
-import { Genres } from './genres.js'
+import Events from './events.js'
+import Carousel from './carousel.js'
+import Genres from './genres.js'
 
 import festivals from '../../data/festivals.js'
 import genres from '../../data/genres.js'
 
+const styles = {
+  root: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  appBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: 80,
+    padding: '10px 40px'
+  },
+  searchBar: {
+    width: 150
+  }
+}
 const serialize = obj => {
   const queries = []
   for (let [key, value] of Object.entries(obj)) {
@@ -17,25 +35,15 @@ const serialize = obj => {
   }
   return queries.join('&')
 }
-
-export class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       params: { city: 'Los Angeles' },
-      searchResults: [],
-      dropdownStatus: { open: false }
+      searchResults: []
     }
-    this.handleDropdown = this.handleDropdown.bind(this)
-    this.handleDropdownClose = this.handleDropdownClose.bind(this)
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
-  }
-  handleDropdown(anchor) {
-    this.setState({ dropdownStatus: { open: true, anchorEl: anchor } })
-  }
-  handleDropdownClose() {
-    this.setState({ dropdownStatus: { open: false } })
   }
   handleLocationUpdate(location) {
     this.setState({ params: location })
@@ -53,24 +61,16 @@ export class App extends Component {
       })
   }
   render() {
+    const { classes } = this.props
     const searchResults = this.state.searchResults
     return (
-      <div>
-        <AppBar title="SoundWave">
+      <div className={classes.root}>
+        <AppBar className={classes.appBar}>
+          <Typography variant="display2">SoundWave</Typography>
           <KeywordForm search={this.handleSearch} />
-          <LocationForm
-            updateLocation={this.handleLocationUpdate}
-            onDropdown={this.handleDropdown}
-            onDropdownClose={this.handleDropdownClose}
-            status={this.state.dropdownStatus.open}
-            anchor={this.state.dropdownStatus.anchorEl}
-          />
+          <LocationForm updateLocation={this.handleLocationUpdate} />
         </AppBar>
-        <Genres genres={genres} search={this.handleSearch} />
-        <Carousel
-          festivals={festivals}
-          renderStatus={searchResults.length <= 0}
-        />
+        <Genres genres={genres} />
         <Events
           events={searchResults}
           renderStatus={searchResults.length > 0}
@@ -79,3 +79,5 @@ export class App extends Component {
     )
   }
 }
+
+export default withStyles(styles)(App)

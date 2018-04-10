@@ -1,24 +1,26 @@
 import React, { Component } from 'react'
-import FlatButton from 'material-ui/FlatButton'
+import Button from 'material-ui/Button'
 import Popover, { PopoverAnimationVertical } from 'material-ui/Popover'
 import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
 
 export default class extends Component {
   constructor(props) {
     super(props)
-    this.state = { location: '' }
-    this.handleClick = this.handleClick.bind(this)
-    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.state = {
+      location: '',
+      dropdownStatus: { open: false, anchorEl: null }
+    }
+    this.handleOpen = this.handleOpen.bind(this)
+    this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
-  handleClick(event) {
+  handleOpen(event) {
     event.preventDefault()
-    this.props.onDropdown(event.currentTarget)
+    this.setState({ dropdownStatus: { open: true, anchorEl: event.target } })
   }
-  handleRequestClose() {
-    this.props.onDropdownClose()
+  handleClose() {
+    this.setState({ dropdownStatus: { open: false, anchorEl: null } })
   }
   handleChange(event) {
     this.setState({ location: event.target.value })
@@ -28,28 +30,30 @@ export default class extends Component {
     this.props.updateLocation(this.state)
   }
   render() {
+    const { open, anchorEl } = this.state.dropdownStatus
     return (
       <div>
-        <FlatButton
-          onClick={this.handleClick}
-          label="Greater Los Angeles Area"
-        />
+        <Button color="secondary" variant="flat" onMouseOver={this.handleOpen}>
+          Los Angeles
+        </Button>
         <Popover
-          open={this.props.status}
-          anchorEl={this.props.anchor}
+          open={open}
+          anchorEl={anchorEl}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          onClose={this.handleClose}
           animation={PopoverAnimationVertical}
         >
           <form name="location" onSubmit={this.handleSubmit}>
             <TextField
-              name="location"
-              hintText="Enter City or Zipcode"
+              id="location"
+              placeholder="Enter City or Zipcode"
               value={this.state.location}
               onChange={this.handleChange}
             />
-            <RaisedButton type="submit" label="Change" primary={true} />
+            <Button type="submit" color="primary" variant="raised">
+              Change
+            </Button>
           </form>
         </Popover>
       </div>
