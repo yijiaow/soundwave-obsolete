@@ -4,15 +4,18 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "nodemon": "nodemon ./server/",
+    "start": "node .",
+    "bundle": "browserify -t babelify client/index.js -o server/bundle.js",
+    "watch:client":
+      "watchify -vd -t babelify client/index.js -o server/bundle.js",
+    "watch:server": "nodemon server/index.js",
+    "watch": "npm-run-all --parallel watch:*",
     "lint": "run-p lint:*",
     "lint:html": "htmlhint ./**/*.html",
     "lint:css": "stylelint ./**/*css",
     "lint:js": "eslint ./**/*.js",
     "test": "npm run lint",
-    "precommit": "npm test",
-    "bundle": "browserify ./client/index.js -t babelify -o ./server/bundle.js",
-    "watch": "watchify ./client/index.js -vd -t babelify -o ./server/bundle.js"
+    "precommit": "npm test"
   },
   "keywords": [],
   "author": "",
