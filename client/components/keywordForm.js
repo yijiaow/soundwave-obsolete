@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
+import Button from 'material-ui/Button'
+import { withStyles } from 'material-ui/styles'
 
-export default class extends Component {
+const styles = {
+  root: {
+    width: '40%',
+    minWidth: 300
+  },
+  input: {
+    width: '80%',
+    textAlign: 'center'
+  }
+}
+export class KeywordForm extends Component {
   constructor(props) {
     super(props)
     this.state = { keyword: '' }
@@ -17,16 +28,27 @@ export default class extends Component {
     this.props.search(this.state)
   }
   render() {
+    const { classes } = this.props
     return (
-      <form name="keyword" onSubmit={this.handleSubmit}>
+      <form
+        autoComplete="off"
+        className={classes.root}
+        name="keyword"
+        onSubmit={this.handleSubmit}
+      >
         <TextField
-          name="keyword"
-          hintText="What are you looking for?"
+          className={classes.input}
+          id="keyword"
+          placeholder="What are you looking for?"
           value={this.state.keyword}
           onChange={this.handleChange}
         />
-        <RaisedButton type="submit" label="Go!" primary={true} />
+        <Button type="submit" color="secondary" variant="fab">
+          Go!
+        </Button>
       </form>
     )
   }
 }
+
+export default withStyles(styles)(KeywordForm)

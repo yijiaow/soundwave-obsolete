@@ -1,43 +1,45 @@
 import React from 'react'
-import { List, ListItem } from 'material-ui/List'
-import { Card, CardHeader, CardText } from 'material-ui/Card'
-import Divider from 'material-ui/Divider'
+import { withStyles } from 'material-ui/styles'
+import Card, { CardContent } from 'material-ui/Card'
+import Typography from 'material-ui/Typography'
 
 const styles = {
   root: {
     display: 'flex',
-    justifyContent: 'center'
+    flexDirection: 'column'
   },
-  list: {
-    width: 840
+  eventCard: {
+    backgroundColor: 'transparent'
+  },
+  title: {
+    marginBottom: 16,
+    fontSize: 14
   }
 }
-export const Events = props => {
+const Events = props => {
+  const { classes } = props
   if (!props.renderStatus) {
     return null
   }
   return (
-    <div style={styles.root}>
-      <List style={styles.list}>
-        {props.events.map(event => (
-          <ListItem key={event.id}>
-            <Card>
-              <CardHeader
-                title={event.name}
-                subtitle={
-                  <span>Start Date: {event.dates.start.localDate}</span>
-                }
-                actAsExpander={true}
-                showExpandableButton={true}
-              />
-              <CardText expandable={true}>
-                <p>{event._embedded.venues[0].name}</p>
-              </CardText>
-            </Card>
-            <Divider />
-          </ListItem>
-        ))}
-      </List>
+    <div className={classes.root}>
+      {props.events.map(event => (
+        <Card key={event.id} className={classes.eventCard}>
+          <CardContent>
+            <Typography className={classes.title} color="textSecondary">
+              {event.name}
+            </Typography>
+            <Typography component="h3">
+              Start Data: {event.dates.start.localDate}
+            </Typography>
+            <Typography component="h3">
+              {event._embedded.venues[0].name}
+            </Typography>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   )
 }
+
+export default withStyles(styles)(Events)

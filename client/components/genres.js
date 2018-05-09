@@ -1,33 +1,30 @@
 import React, { Component } from 'react'
-import { List, ListItem } from 'material-ui/List'
+import List from 'material-ui/List'
+import Button from 'material-ui/Button'
+import { withStyles } from 'material-ui/styles'
 
-const styles = {
+const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%'
+    justifyContent: 'space-around'
   },
-  circle: {
-    width: 85,
-    height: 85,
+  btn: {
+    width: 84,
+    height: 40,
     margin: 10,
-    textAlign: 'center',
+    borderRadius: 15,
+    border: `2px solid ${theme.palette.secondary.light}`,
+    color: theme.palette.text.secondary,
     fontSize: 14,
-    borderRadius: 40,
-    backgroundColor: 'silver'
+    textTransform: 'capitalize',
+    boxShadow: '0 0 25px'
   },
   selected: {
-    width: 85,
-    height: 85,
-    margin: 10,
-    textAlign: 'center',
-    fontSize: 14,
-    borderRadius: 40,
     backgroundColor: 'tomato'
   }
-}
-export class Genres extends Component {
+})
+class Genres extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -57,26 +54,29 @@ export class Genres extends Component {
     this.props.search({ classificationId: id })
   }
   render() {
+    const { classes } = this.props
     return (
-      <List style={styles.root}>
+      <List className={classes.root}>
         {this.props.genres.map((genre, i) => (
-          <ListItem
+          <Button
+            focusRipple
             key={genre.id}
-            style={
-              this.state.selectedIndex === i ? styles.selected : styles.circle
-            }
+            className={`${classes.btn} ${
+              this.state.selectedIndex === i ? classes.selected : ''
+            }`}
             onClick={() => {
               this.handleChange(i, genre.id)
               this.fetchEventsByGenre(genre.id)
             }}
           >
-            <p>{genre.name}</p>
-          </ListItem>
+            {genre.name}
+          </Button>
         ))}
-        <ListItem key="more" style={styles.circle} onClick={this.fetchGenres}>
-          <p>More genres</p>
-        </ListItem>
+        <Button key="more" className={classes.btn} onClick={this.fetchGenres}>
+          More
+        </Button>
       </List>
     )
   }
 }
+export default withStyles(styles)(Genres)

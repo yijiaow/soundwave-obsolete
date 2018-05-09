@@ -1,58 +1,104 @@
 import React, { Component } from 'react'
-import FlatButton from 'material-ui/FlatButton'
+import Button from 'material-ui/Button'
 import Popover, { PopoverAnimationVertical } from 'material-ui/Popover'
 import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
+import { withStyles } from 'material-ui/styles'
 
-export default class extends Component {
+const styles = {
+  dropdown: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 20,
+    borderRadius: 20
+  },
+  button: {
+    marginTop: 20,
+    borderRadius: 20
+  }
+}
+export class LocationForm extends Component {
   constructor(props) {
     super(props)
-    this.state = { location: '' }
-    this.handleClick = this.handleClick.bind(this)
-    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.state = {
+      city: '',
+      state: '',
+      zipcode: '',
+      dropdownStatus: { open: false, anchorEl: null }
+    }
+    this.handleOpen = this.handleOpen.bind(this)
+    this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
-  handleClick(event) {
+  handleOpen(event) {
     event.preventDefault()
-    this.props.onDropdown(event.currentTarget)
+    this.setState({ dropdownStatus: { open: true, anchorEl: event.target } })
   }
-  handleRequestClose() {
-    this.props.onDropdownClose()
+  handleClose() {
+    this.setState({ dropdownStatus: { open: false, anchorEl: null } })
   }
   handleChange(event) {
-    this.setState({ location: event.target.value })
+    this.setState({ [event.target.name]: event.target.value })
   }
   handleSubmit(event) {
     event.preventDefault()
     this.props.updateLocation(this.state)
   }
   render() {
+    const { classes } = this.props
+    const { open, anchorEl } = this.state.dropdownStatus
     return (
       <div>
-        <FlatButton
-          onClick={this.handleClick}
-          label="Greater Los Angeles Area"
-        />
+        <Button variant="flat" onMouseOver={this.handleOpen}>
+          Los Angeles
+        </Button>
         <Popover
-          open={this.props.status}
-          anchorEl={this.props.anchor}
-          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
+          open={open}
+          anchorEl={anchorEl}
+          anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          onClose={this.handleClose}
           animation={PopoverAnimationVertical}
+          elevation={16}
+          transitionDuration={1000}
         >
-          <form name="location" onSubmit={this.handleSubmit}>
+          <form
+            noValidate
+            autoComplete="off"
+            className={classes.dropdown}
+            onSubmit={this.handleSubmit}
+          >
             <TextField
-              name="location"
-              hintText="Enter City or Zipcode"
-              value={this.state.location}
+              id="city"
+              label="City"
+              value={this.state.city}
               onChange={this.handleChange}
             />
-            <RaisedButton type="submit" label="Change" primary={true} />
+            <TextField
+              id="state"
+              label="State"
+              value={this.state.state}
+              onChange={this.handleChange}
+            />
+            <TextField
+              id="zipcode"
+              label="Zip Code"
+              value={this.state.zipcode}
+              onChange={this.handleChange}
+            />
+            <Button
+              className={classes.button}
+              type="submit"
+              color="primary"
+              variant="raised"
+            >
+              Change
+            </Button>
           </form>
         </Popover>
       </div>
     )
   }
 }
+
+export default withStyles(styles)(LocationForm)
