@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
-import KeywordForm from './keywordForm.js'
-import LocationForm from './locationForm.js'
-import Events from './events.js'
-import Carousel from './carousel.js'
-import Genres from './genres.js'
+import { ErrorBoundary } from './error'
+import KeywordForm from './keywordForm'
+import LocationForm from './locationForm'
+import { Carousel } from './carousel'
+import Events from './events'
+import Genres from './genres'
 
-import festivals from '../../data/festivals.js'
-import genres from '../../data/genres.js'
+import festivals from '../../data/festivals'
+import genres from '../../data/genres'
 
 const styles = {
   root: {
@@ -26,6 +27,10 @@ const styles = {
   },
   searchBar: {
     width: 150
+  },
+  section: {
+    marginTop: 80,
+    padding: 50
   }
 }
 const serialize = obj => {
@@ -64,18 +69,20 @@ class App extends Component {
     const { classes } = this.props
     const searchResults = this.state.searchResults
     return (
-      <div className={classes.root}>
-        <AppBar className={classes.appBar}>
-          <Typography variant="display2">SoundWave</Typography>
-          <KeywordForm search={this.handleSearch} />
-          <LocationForm updateLocation={this.handleLocationUpdate} />
-        </AppBar>
-        <Genres genres={genres} />
-        <Events
-          events={searchResults}
-          renderStatus={searchResults.length > 0}
-        />
-      </div>
+      <ErrorBoundary>
+        <div className={classes.root}>
+          <AppBar className={classes.appBar}>
+            <Typography variant="display2">SoundWave</Typography>
+            <KeywordForm search={this.handleSearch} />
+            <LocationForm search={this.handleSearch} />
+          </AppBar>
+          <Genres genres={genres} search={this.handleSearch} />
+          <Events
+            events={searchResults}
+            renderStatus={searchResults.length > 0}
+          />
+        </div>
+      </ErrorBoundary>
     )
   }
 }
