@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
-import List, { ListItem, ListItemText } from 'material-ui/List'
+import List from 'material-ui/List'
 import Button from 'material-ui/Button'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
-    position: 'absolute',
-    top: 100,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%'
+    justifyContent: 'space-around'
   },
   btn: {
     width: 84,

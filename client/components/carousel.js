@@ -1,36 +1,37 @@
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper'
-import { CardMedia, CardTitle } from 'material-ui/Card'
-import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left'
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
+import { CardMedia } from 'material-ui/Card'
+import ArrowLeft from '@material-ui/icons/ChevronLeft'
+import ArrowRight from '@material-ui/icons/ChevronRight'
+import { withStyles } from 'material-ui/styles'
 
 const styles = {
   root: {
     position: 'relative',
+    top: 250,
     width: 1200,
     height: 400,
-    marginTop: 50,
     marginLeft: 'auto',
     marginRight: 'auto'
   },
-  middleSlide: {
-    position: 'absolute',
-    left: 300,
-    zIndex: 1
-  },
-  leftSlide: {
-    position: 'absolute',
-    left: 0,
-    zIndex: 0
-  },
-  rightSlide: {
-    position: 'absolute',
-    right: 0,
-    zIndex: -1
-  },
-  image: {
+  media: {
     width: 600,
     height: 400
+  },
+  slide: {
+    position: 'absolute'
+  },
+  middle: {
+    left: 300,
+    zIndex: 5
+  },
+  left: {
+    left: 0,
+    zIndex: 4
+  },
+  right: {
+    right: 0,
+    zIndex: 3
   },
   leftArrow: {
     position: 'absolute',
@@ -46,7 +47,7 @@ const styles = {
   }
 }
 
-export class Carousel extends Component {
+class Carousel extends Component {
   constructor(props) {
     super(props)
     this.state = { activeIndex: 0 }
@@ -70,9 +71,6 @@ export class Carousel extends Component {
         : this.state.activeIndex + 1
     this.setState({ activeIndex: next })
   }
-  componentDidMount() {
-    this.timerID = setInterval(() => this.slideToNext(), 2500)
-  }
   pause() {
     clearInterval(this.timerID)
   }
@@ -80,6 +78,7 @@ export class Carousel extends Component {
     this.timerID = setInterval(() => this.slideToNext(), 2500)
   }
   render() {
+    const { classes } = this.props
     const slides = this.props.festivals
     const curr = this.state.activeIndex
     const prev = curr <= 0 ? slides.length - 1 : curr - 1
@@ -90,55 +89,47 @@ export class Carousel extends Component {
     }
     return (
       <div
-        style={styles.root}
+        className={classes.root}
         onMouseOver={this.pause}
         onMouseOut={this.resume}
       >
-        <NavigationChevronLeft
-          style={styles.leftArrow}
-          onClick={this.slideToPrev}
-        />
-        <Paper key={prev} style={styles.leftSlide} zDepth={5}>
+        <ArrowLeft className={classes.leftArrow} onClick={this.slideToPrev} />
+        <Paper
+          key={prev}
+          className={`${classes.left} ${classes.slide}`}
+          elevation={7}
+        >
           <CardMedia
-            overlay={
-              <CardTitle
-                title={displaySlides[0].title}
-                subtitle={displaySlides[0].dateRange}
-              />
-            }
-          >
-            <img src={displaySlides[0].imageSrc} style={styles.image} />
-          </CardMedia>
+            className={classes.media}
+            title={displaySlides[0].title}
+            image={displaySlides[0].imageSrc}
+          />
         </Paper>
-        <Paper key={curr} style={styles.middleSlide} zDepth={5}>
+        <Paper
+          key={curr}
+          className={`${classes.middle} ${classes.slide}`}
+          elevation={10}
+        >
           <CardMedia
-            overlay={
-              <CardTitle
-                title={displaySlides[1].title}
-                subtitle={displaySlides[1].dateRange}
-              />
-            }
-          >
-            <img src={displaySlides[1].imageSrc} style={styles.image} />
-          </CardMedia>
+            className={classes.media}
+            title={displaySlides[1].title}
+            image={displaySlides[1].imageSrc}
+          />
         </Paper>
-        <Paper key={next} style={styles.rightSlide} zDepth={5}>
+        <Paper
+          key={next}
+          className={`${classes.right} ${classes.slide}`}
+          elevation={7}
+        >
           <CardMedia
-            overlay={
-              <CardTitle
-                title={displaySlides[2].title}
-                subtitle={displaySlides[2].dateRange}
-              />
-            }
-          >
-            <img src={displaySlides[2].imageSrc} style={styles.image} />
-          </CardMedia>
+            className={classes.media}
+            title={displaySlides[2].title}
+            image={displaySlides[2].imageSrc}
+          />
         </Paper>
-        <NavigationChevronRight
-          style={styles.rightArrow}
-          onClick={this.slideToNext}
-        />
+        <ArrowRight className={classes.rightArrow} onClick={this.slideToNext} />
       </div>
     )
   }
 }
+export default withStyles(styles)(Carousel)

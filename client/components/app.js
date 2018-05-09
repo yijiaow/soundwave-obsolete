@@ -5,7 +5,7 @@ import { withStyles } from 'material-ui/styles'
 import { ErrorBoundary } from './error'
 import KeywordForm from './keywordForm'
 import LocationForm from './locationForm'
-import { Carousel } from './carousel'
+import Carousel from './carousel'
 import Events from './events'
 import Genres from './genres'
 
@@ -76,6 +76,7 @@ class App extends Component {
             <KeywordForm search={this.handleSearch} />
             <LocationForm search={this.handleSearch} />
           </AppBar>
+          <Carousel festivals={festivals} renderStatus={true} />
           <Genres genres={genres} search={this.handleSearch} />
           <Events
             events={searchResults}

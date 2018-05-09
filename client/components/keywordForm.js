@@ -13,7 +13,7 @@ const styles = {
     textAlign: 'center'
   }
 }
-export default class extends Component {
+export class KeywordForm extends Component {
   constructor(props) {
     super(props)
     this.state = { keyword: '' }
@@ -28,10 +28,16 @@ export default class extends Component {
     this.props.search(this.state)
   }
   render() {
+    const { classes } = this.props
     return (
-      <form style={styles.root} name="keyword" onSubmit={this.handleSubmit}>
+      <form
+        autoComplete="off"
+        className={classes.root}
+        name="keyword"
+        onSubmit={this.handleSubmit}
+      >
         <TextField
-          style={styles.input}
+          className={classes.input}
           id="keyword"
           placeholder="What are you looking for?"
           value={this.state.keyword}
@@ -44,3 +50,5 @@ export default class extends Component {
     )
   }
 }
+
+export default withStyles(styles)(KeywordForm)
