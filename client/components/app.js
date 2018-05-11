@@ -29,14 +29,18 @@ const styles = {
     width: 150
   },
   section: {
-    marginTop: 80,
-    padding: 50
+    alignSelf: 'center',
+    width: '70%',
+    marginTop: 120
   }
 }
 const serialize = obj => {
   const queries = []
   for (let [key, value] of Object.entries(obj)) {
-    queries.push(key.concat('=', encodeURI(value)))
+    console.log([key, value])
+    if (value !== '') {
+      queries.push(key.concat('=', encodeURI(value)))
+    }
   }
   return queries.join('&')
 }
@@ -44,8 +48,8 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      params: { city: 'Los Angeles' },
-      searchResults: []
+      params: { city: 'Los Angeles', state: 'CA', zipcode: '' },
+      searchResults: null
     }
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
@@ -54,15 +58,19 @@ class App extends Component {
     this.setState({ params: location })
   }
   handleSearch(params) {
-    const merged = Object.assign(params, this.state.params)
+    const merged = Object.assign(params, {
+      city: this.state.params.city,
+      postalCode: this.state.params.zipcode
+    })
     const queryString = serialize(merged)
+    console.log(queryString)
     fetch(`/events/search?${queryString}`)
       .then(res => res.json())
       .then(data => {
         this.setState({ searchResults: data.events })
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
       })
   }
   render() {
@@ -74,14 +82,17 @@ class App extends Component {
           <AppBar className={classes.appBar}>
             <Typography variant="display2">SoundWave</Typography>
             <KeywordForm search={this.handleSearch} />
-            <LocationForm search={this.handleSearch} />
+            <LocationForm
+              search={this.handleSearch}
+              updateLocation={this.handleLocationUpdate}
+              currentLocation={this.state.params}
+            />
           </AppBar>
-          <Carousel festivals={festivals} renderStatus={true} />
           <Genres genres={genres} search={this.handleSearch} />
-          <Events
-            events={searchResults}
-            renderStatus={searchResults.length > 0}
-          />
+          <section className={classes.section}>
+            {searchResults && <Events events={this.state.searchResults} />}
+            {!searchResults && <Carousel festivals={festivals} />}
+          </section>
         </div>
       </ErrorBoundary>
     )
