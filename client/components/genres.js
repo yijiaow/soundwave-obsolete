@@ -5,9 +5,12 @@ import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
   root: {
+    position: 'relative',
+    top: 100,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    alignSelf: 'center'
   },
   btn: {
     width: 84,

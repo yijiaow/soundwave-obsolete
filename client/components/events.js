@@ -18,7 +18,7 @@ const styles = {
 }
 const Events = props => {
   const { classes } = props
-  if (!props.renderStatus) {
+  if (!props.events) {
     return null
   }
   return (
