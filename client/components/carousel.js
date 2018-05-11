@@ -8,21 +8,22 @@ import { withStyles } from 'material-ui/styles'
 const styles = {
   root: {
     position: 'relative',
-    top: 250,
-    width: 1200,
+    top: 50,
+    width: '100%',
     height: 400,
     marginLeft: 'auto',
     marginRight: 'auto'
   },
   media: {
-    width: 600,
+    width: 540,
     height: 400
   },
   slide: {
     position: 'absolute'
   },
   middle: {
-    left: 300,
+    left: '50%',
+    transform: 'translate(-50%)',
     zIndex: 5
   },
   left: {
@@ -36,13 +37,13 @@ const styles = {
   leftArrow: {
     position: 'absolute',
     top: 180,
-    left: 320,
-    zIndex: 10
+    left: 160,
+    zIndex: 100
   },
   rightArrow: {
     position: 'absolute',
     top: 180,
-    right: 320,
+    right: 160,
     zIndex: 10
   }
 }
@@ -84,14 +85,11 @@ class Carousel extends Component {
     const prev = curr <= 0 ? slides.length - 1 : curr - 1
     const next = curr >= slides.length - 1 ? 0 : curr + 1
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
-    if (!this.props.renderStatus) {
-      return null
-    }
     return (
       <div
         className={classes.root}
-        onMouseOver={this.pause}
-        onMouseOut={this.resume}
+        onMouseEnter={this.pause}
+        onMouseLeave={this.resume}
       >
         <ArrowLeft className={classes.leftArrow} onClick={this.slideToPrev} />
         <Paper

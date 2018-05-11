@@ -21,7 +21,7 @@ app.get('/events/search', (req, res) => {
       if (err) {
         console.log(err)
       }
-      res.send(JSON.parse(body)._embedded)
+      res.json(JSON.parse(body)._embedded)
     }
   )
 })

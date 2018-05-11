@@ -1,6 +1,8 @@
 {
   "name": "soundwave",
   "version": "1.0.0",
+  "description:":
+    "A web application for live music enthusiasts to track concerts and festivals",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -12,13 +14,15 @@
     "watch": "npm-run-all --parallel watch:*",
     "lint": "run-p lint:*",
     "lint:html": "htmlhint ./**/*.html",
-    "lint:css": "stylelint ./**/*css",
+    "lint:css": "stylelint ./**/*.css",
     "lint:js": "eslint ./**/*.js",
     "test": "npm run lint",
     "precommit": "npm test"
   },
-  "keywords": [],
-  "author": "",
+  "nodemonConfig": {
+    "ignore": ["server/bundle.js", "client/"]
+  },
+  "author": "Yijiao Wang",
   "license": "ISC",
   "dependencies": {
     "@material-ui/icons": "^1.0.0-beta.42",
