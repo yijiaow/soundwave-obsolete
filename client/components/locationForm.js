@@ -29,6 +29,7 @@ export class LocationForm extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.resetForm = this.resetForm.bind(this)
   }
   handleOpen(event) {
     event.preventDefault()
@@ -42,15 +43,31 @@ export class LocationForm extends Component {
   }
   handleSubmit(event) {
     event.preventDefault()
-    this.props.updateLocation(this.state)
+    const { city, state, zipcode } = this.state
+    this.props.updateLocation({ city, state, zipcode })
+    this.resetForm(event.target)
+  }
+  resetForm(form) {
+    this.setState({
+      city: '',
+      state: '',
+      zipcode: '',
+      dropdownStatus: { open: false, anchorEl: null }
+    })
   }
   render() {
     const { classes } = this.props
     const { open, anchorEl } = this.state.dropdownStatus
+    const location = this.props.currentLocation
+    const stateString = location.state && `, ${location.state}`
     return (
       <div>
-        <Button variant="flat" onMouseOver={this.handleOpen}>
-          Los Angeles
+        <Button
+          variant="flat"
+          className={classes.location}
+          onClick={this.handleOpen}
+        >
+          {`${location.city} ${stateString}  ${location.zipcode}`}
         </Button>
         <Popover
           open={open}
@@ -63,25 +80,26 @@ export class LocationForm extends Component {
           transitionDuration={1000}
         >
           <form
+            id="locationForm"
             noValidate
             autoComplete="off"
             className={classes.dropdown}
             onSubmit={this.handleSubmit}
           >
             <TextField
-              id="city"
+              name="city"
               label="City"
               value={this.state.city}
               onChange={this.handleChange}
             />
             <TextField
-              id="state"
+              name="state"
               label="State"
               value={this.state.state}
               onChange={this.handleChange}
             />
             <TextField
-              id="zipcode"
+              name="zipcode"
               label="Zip Code"
               value={this.state.zipcode}
               onChange={this.handleChange}
