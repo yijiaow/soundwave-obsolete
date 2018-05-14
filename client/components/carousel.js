@@ -37,13 +37,15 @@ const styles = {
   leftArrow: {
     position: 'absolute',
     top: 180,
-    left: 160,
+    left: '50%',
+    transform: 'translate(-250px)',
     zIndex: 100
   },
   rightArrow: {
     position: 'absolute',
     top: 180,
-    right: 160,
+    right: '50%',
+    transform: 'translate(250px)',
     zIndex: 10
   },
   eventBanner: {
