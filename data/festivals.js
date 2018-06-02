@@ -2,7 +2,7 @@ export default [
   {
     title: 'Coachella',
     dateRange: 'April 13-15 & April 20-22, 2018',
-    region: '',
+    region: 'Indio, CA',
     genre: '',
     description: '',
     imageSrc: './images/coachella.jpg'
