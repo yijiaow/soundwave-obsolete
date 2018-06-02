@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import AppBar from 'material-ui/AppBar'
-import Typography from 'material-ui/Typography'
-import { withStyles } from 'material-ui/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 import { ErrorBoundary } from './error'
 import KeywordForm from './keywordForm'
 import LocationForm from './locationForm'
 import Carousel from './carousel'
-import Events from './events'
+import { Events } from './events'
 import Genres from './genres'
 
 import festivals from '../../data/festivals'
@@ -31,13 +31,13 @@ const styles = {
   section: {
     alignSelf: 'center',
     width: '70%',
+    maxWidth: 760,
     marginTop: 120
   }
 }
 const serialize = obj => {
   const queries = []
   for (let [key, value] of Object.entries(obj)) {
-    console.log([key, value])
     if (value !== '') {
       queries.push(key.concat('=', encodeURI(value)))
     }
@@ -63,7 +63,6 @@ class App extends Component {
       postalCode: this.state.params.zipcode
     })
     const queryString = serialize(merged)
-    console.log(queryString)
     fetch(`/events/search?${queryString}`)
       .then(res => res.json())
       .then(data => {

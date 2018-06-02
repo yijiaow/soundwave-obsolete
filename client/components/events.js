@@ -1,5 +1,5 @@
 import React from 'react'
-import EventCollapsed from './eventCollapsed'
+import EventCard from './eventCollapsed'
 
 const styles = {
   root: {
@@ -13,15 +13,18 @@ export const Events = props => {
     return null
   }
   return (
-    <div styles={styles.root}>
+    <div style={styles.root}>
       {props.events.map(event => {
         return (
-          <EventCollapsed
+          <EventCard
             key={event.id}
+            style={styles.eventCard}
             name={event.name}
             dateTime={event.dates.start.dateTime}
             venues={event._embedded.venues}
             headliners={event._embedded.attractions}
+            imageSrc={event.images[0].url}
+            genre={event.classifications[0].genre.name}
           />
         )
       })}

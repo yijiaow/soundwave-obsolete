@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import List from 'material-ui/List'
-import Button from 'material-ui/Button'
-import { withStyles } from 'material-ui/styles'
+import List from '@material-ui/core/List'
+import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   root: {

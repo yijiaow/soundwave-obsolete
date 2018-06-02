@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import Paper from 'material-ui/Paper'
-import { CardMedia } from 'material-ui/Card'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
 import ArrowLeft from '@material-ui/icons/ChevronLeft'
 import ArrowRight from '@material-ui/icons/ChevronRight'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   root: {
@@ -37,14 +39,34 @@ const styles = {
   leftArrow: {
     position: 'absolute',
     top: 180,
-    left: 160,
+    left: '50%',
+    transform: 'translate(-250px)',
     zIndex: 100
   },
   rightArrow: {
     position: 'absolute',
     top: 180,
-    right: 160,
+    right: '50%',
+    transform: 'translate(250px)',
     zIndex: 10
+  },
+  eventBanner: {
+    position: 'absolute',
+    bottom: 0,
+    display: 'flex',
+    width: '100%',
+    padding: '10px 25px',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)'
+  },
+  eventContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    '&:last-child': {
+      padding: 0
+    }
+  },
+  regionInfo: {
+    fontSize: 20
   }
 }
 
@@ -85,6 +107,7 @@ class Carousel extends Component {
     const prev = curr <= 0 ? slides.length - 1 : curr - 1
     const next = curr >= slides.length - 1 ? 0 : curr + 1
     const displaySlides = [slides[prev]].concat(slides[curr], slides[next])
+    const { title, dateRange, region } = displaySlides[1]
     return (
       <div
         className={classes.root}
@@ -92,39 +115,33 @@ class Carousel extends Component {
         onMouseLeave={this.resume}
       >
         <ArrowLeft className={classes.leftArrow} onClick={this.slideToPrev} />
-        <Paper
-          key={prev}
-          className={`${classes.left} ${classes.slide}`}
-          elevation={7}
-        >
+        <Card key={prev} className={`${classes.left} ${classes.slide}`}>
           <CardMedia
             className={classes.media}
-            title={displaySlides[0].title}
             image={displaySlides[0].imageSrc}
           />
-        </Paper>
-        <Paper
-          key={curr}
-          className={`${classes.middle} ${classes.slide}`}
-          elevation={10}
-        >
+        </Card>
+        <Card key={curr} className={`${classes.middle} ${classes.slide}`}>
           <CardMedia
             className={classes.media}
             title={displaySlides[1].title}
             image={displaySlides[1].imageSrc}
           />
-        </Paper>
-        <Paper
-          key={next}
-          className={`${classes.right} ${classes.slide}`}
-          elevation={7}
-        >
+          <div className={classes.eventBanner}>
+            <CardContent className={classes.eventContent}>
+              <Typography variant="display1">
+                {title} <span className={classes.regionInfo}>{region}</span>
+              </Typography>
+              <Typography variant="subheading">{dateRange}</Typography>
+            </CardContent>
+          </div>
+        </Card>
+        <Card key={next} className={`${classes.right} ${classes.slide}`}>
           <CardMedia
             className={classes.media}
-            title={displaySlides[2].title}
             image={displaySlides[2].imageSrc}
           />
-        </Paper>
+        </Card>
         <ArrowRight className={classes.rightArrow} onClick={this.slideToNext} />
       </div>
     )
