@@ -30,7 +30,8 @@ const styles = theme => ({
     backgroundColor: 'transparent',
     width: 480,
     marginLeft: 20,
-    marginRight: 40
+    marginRight: 40,
+    padding: 20
   },
   headlinerList: {
     display: 'flex',
@@ -53,12 +54,16 @@ const styles = theme => ({
     transform: 'rotate(180deg)'
   },
   expansion: {
-    display: 'flex',
-    flexDirection: 'column'
+    display: 'flex'
   },
   media: {
     width: 150,
     height: 180
+  },
+  eventDetails: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 0
   }
 })
 
@@ -76,10 +81,27 @@ class EventCard extends Component {
   }
   render() {
     const { classes } = this.props
-    const { name, dateTime, venues, headliners, imageSrc, genre } = this.props
+    const {
+      name,
+      dateTime,
+      venues,
+      headliners,
+      imageSrc,
+      genre,
+      saleStatus,
+      saleStart
+    } = this.props
     let [dayOfWeek, month, day, , time] = new Date(dateTime)
       .toString()
       .split(' ')
+    if (saleStart === 'onsale') {
+      const saleStartString = new Date(saleStart)
+        .toString()
+        .split(' ')
+        .slice(1, 5)
+        .join(' ')
+      console.log(saleStartString)
+    }
     return (
       <div>
         <div className={classes.card}>
@@ -93,15 +115,15 @@ class EventCard extends Component {
             </CardContent>
           </Card>
           <Card className={classes.eventCard}>
-            <Typography variant="title" color="secondary" gutterBottom>
+            <Typography variant="headline" color="secondary" gutterBottom>
               {name}
             </Typography>
-            <Typography variant="subheading" color="textSecondary" gutterBottom>
+            <Typography variant="title" color="textSecondary" gutterBottom>
               Venue: {venues[0].name}
             </Typography>
             <Typography
-              variant="subheading"
-              color="textSecondary"
+              variant="title"
+              color="secondary"
               component="ul"
               classes={{ root: classes.headlinerList }}
             >
@@ -112,7 +134,7 @@ class EventCard extends Component {
                   </li>
                 ))}
             </Typography>
-            <Typography variant="body1">Start Time: {time}</Typography>
+            <Typography variant="title">Start Time: {time}</Typography>
             <IconButton
               className={`${classes.icon} ${classes[this.state.expandIcon]}`}
               onClick={this.handleExpand}
@@ -124,15 +146,21 @@ class EventCard extends Component {
           </Card>
         </div>
         <Collapse
-          className={classes.expansion}
+          classes={{ wrapperInner: classes.expansion }}
           in={this.state.expanded}
           timeout="auto"
           unmountOnExit
         >
           <CardMedia className={classes.media} image={imageSrc} />
-          <CardContent>
-            <Typography variant="title" color="textSecondary">
-              Genre: {genre}
+          <CardContent className={classes.eventDetails}>
+            <Typography variant="headline" color="textSecondary">
+              {saleStatus}
+            </Typography>
+            <Typography variant="headline" color="textSecondary">
+              {saleStart}
+            </Typography>
+            <Typography variant="headline" color="textSecondary">
+              {genre !== 'Undefined' && `Genre: ${genre}`}
             </Typography>
             <Typography
               variant="subheading"
@@ -140,11 +168,10 @@ class EventCard extends Component {
               component="ul"
               classes={{ root: classes.headlinerList }}
             >
+              Artists:
               {headliners &&
                 headliners.map(headliner => (
-                  <li key={headliner.id} className={classes.headliner}>
-                    {headliner.name}
-                  </li>
+                  <li key={headliner.id}>{headliner.name}</li>
                 ))}
             </Typography>
           </CardContent>
