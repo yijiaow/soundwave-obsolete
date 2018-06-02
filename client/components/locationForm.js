@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Button from 'material-ui/Button'
-import Popover, { PopoverAnimationVertical } from 'material-ui/Popover'
-import TextField from 'material-ui/TextField'
-import { withStyles } from 'material-ui/styles'
+import Button from '@material-ui/core/Button'
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   dropdown: {

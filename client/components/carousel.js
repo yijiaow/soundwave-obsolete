@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import Card, { CardMedia, CardContent } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
 import ArrowLeft from '@material-ui/icons/ChevronLeft'
 import ArrowRight from '@material-ui/icons/ChevronRight'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
   root: {

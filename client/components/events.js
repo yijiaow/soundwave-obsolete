@@ -1,45 +1,35 @@
 import React from 'react'
-import { withStyles } from 'material-ui/styles'
-import Card, { CardContent } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
+import EventCard from './eventCollapsed'
 
 const styles = {
   root: {
     display: 'flex',
     flexDirection: 'column'
-  },
-  eventCard: {
-    backgroundColor: 'transparent'
-  },
-  title: {
-    marginBottom: 16,
-    fontSize: 14
   }
 }
-const Events = props => {
-  const { classes } = props
-  if (!props.events) {
+
+export const Events = props => {
+  if (!props.events || props.events.length === 0) {
     return null
   }
   return (
-    <div className={classes.root}>
-      {props.events.map(event => (
-        <Card key={event.id} className={classes.eventCard}>
-          <CardContent>
-            <Typography className={classes.title} color="textSecondary">
-              {event.name}
-            </Typography>
-            <Typography component="h3">
-              Start Data: {event.dates.start.localDate}
-            </Typography>
-            <Typography component="h3">
-              {event._embedded.venues[0].name}
-            </Typography>
-          </CardContent>
-        </Card>
-      ))}
+    <div style={styles.root}>
+      {props.events.map(event => {
+        return (
+          <EventCard
+            key={event.id}
+            style={styles.eventCard}
+            name={event.name}
+            dateTime={event.dates.start.dateTime}
+            venues={event._embedded.venues}
+            headliners={event._embedded.attractions}
+            imageSrc={event.images[0].url}
+            genre={event.classifications[0].genre.name}
+            saleStatus={event.dates.status.code}
+            saleStart={event.sales.public.startDateTime}
+          />
+        )
+      })}
     </div>
   )
 }
-
-export default withStyles(styles)(Events)

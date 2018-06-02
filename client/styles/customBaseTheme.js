@@ -1,6 +1,6 @@
-import purple from 'material-ui/colors/purple'
-import deepPurple from 'material-ui/colors/deepPurple'
-import { createMuiTheme } from 'material-ui/styles'
+import purple from '@material-ui/core/colors/purple'
+import cyan from '@material-ui/core/colors/cyan'
+import { createMuiTheme } from '@material-ui/core/styles'
 
 export default createMuiTheme({
   palette: {
@@ -8,22 +8,30 @@ export default createMuiTheme({
     primary: {
       light: purple.A200,
       main: purple[900],
-      dark: '#38006b',
-      contrastText: '#fff'
+      dark: '#38006b'
     },
     secondary: {
-      light: deepPurple.A100,
-      main: deepPurple.A400,
-      dark: deepPurple.A700,
-      contrastText: '#fff'
-    }
+      light: cyan.A400,
+      main: cyan[700],
+      dark: cyan[900]
+    },
+    text: { primary: purple.A200 }
   },
   typography: {
     fontFamily: "'Titillium Web', sans-serif",
+    fontSize: 14,
     fontWeightLight: 200,
     fontWeightRegular: 400,
     display2: {
       fontWeight: 200
+    },
+    display1: {
+      fontSize: '1.8rem',
+      fontWeight: 200
+    },
+    title: {
+      fontSize: '1.2rem',
+      fontWeight: 400
     }
   }
 })
