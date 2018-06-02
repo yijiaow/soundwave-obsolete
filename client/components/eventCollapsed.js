@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
@@ -11,41 +12,42 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 const styles = theme => ({
   card: {
     display: 'flex',
-    alignItems: 'center',
-    height: 150,
-    borderTop: `1px dashed ${theme.palette.grey[200]}`
+    paddingTop: 24,
+    borderTop: `1px dashed ${theme.palette.grey[200]}`,
+    marginBottom: 20
   },
   dateCard: {
     display: 'flex',
     justifyContent: 'center',
     width: 90,
-    borderRadius: 10,
-    '& > dateContent': {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
+    height: 116,
+    borderRadius: 12
+  },
+  dateContent: {
+    padding: 20,
+    ':last-child': {
+      paddingBottom: 18
     }
   },
   eventCard: {
     backgroundColor: 'transparent',
-    width: 480,
+    width: '100%',
     marginLeft: 20,
-    marginRight: 40,
-    padding: 20
+    marginRight: 40
   },
-  headlinerList: {
+  headliners: {
     display: 'flex',
+    flexWrap: 'wrap',
     padding: 0,
     listStyle: 'none'
   },
-  headliner: {
+  listItem: {
     marginRight: 8,
     fontWeight: 400
   },
   icon: {
     position: 'absolute',
-    botton: 0,
-    right: 50
+    right: 240
   },
   expandIconOpen: {
     transform: 'rotate(0deg)'
@@ -54,16 +56,18 @@ const styles = theme => ({
     transform: 'rotate(180deg)'
   },
   expansion: {
-    display: 'flex'
+    display: 'flex',
+    marginBottom: 24
   },
   media: {
-    width: 150,
-    height: 180
+    width: 180,
+    height: 120,
+    borderRadius: 12
   },
   eventDetails: {
     display: 'flex',
     flexDirection: 'column',
-    padding: 0
+    paddingTop: 0
   }
 })
 
@@ -94,19 +98,19 @@ class EventCard extends Component {
     let [dayOfWeek, month, day, , time] = new Date(dateTime)
       .toString()
       .split(' ')
-    if (saleStart === 'onsale') {
-      const saleStartString = new Date(saleStart)
+    let saleStartString
+    if (saleStatus === 'onsale') {
+      saleStartString = new Date(saleStart)
         .toString()
         .split(' ')
         .slice(1, 5)
         .join(' ')
-      console.log(saleStartString)
     }
     return (
       <div>
         <div className={classes.card}>
           <Card className={classes.dateCard}>
-            <CardContent classes={{ root: classes.dateContent }}>
+            <CardContent className={classes.dateContent}>
               <Typography variant="title" color="textSecondary">
                 {month.toUpperCase()}
               </Typography>
@@ -121,28 +125,32 @@ class EventCard extends Component {
             <Typography variant="title" color="textSecondary" gutterBottom>
               Venue: {venues[0].name}
             </Typography>
+            <Typography variant="title" color="textSecondary" gutterBottom>
+              Location: {venues[0].address.line1}, {venues[0].city.name}
+            </Typography>
             <Typography
               variant="title"
               color="secondary"
               component="ul"
-              classes={{ root: classes.headlinerList }}
+              className={classes.headliners}
             >
               {headliners &&
                 headliners.slice(0, 3).map(headliner => (
-                  <li key={headliner.id} className={classes.headliner}>
+                  <li key={headliner.id} className={classes.listItem}>
                     {headliner.name}
                   </li>
                 ))}
             </Typography>
-            <Typography variant="title">Start Time: {time}</Typography>
-            <IconButton
-              className={`${classes.icon} ${classes[this.state.expandIcon]}`}
-              onClick={this.handleExpand}
-              aria-expanded={this.state.expanded}
-              aria-label="Show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
+            <CardActions>
+              <IconButton
+                className={`${classes.icon} ${classes[this.state.expandIcon]}`}
+                onClick={this.handleExpand}
+                aria-expanded={this.state.expanded}
+                aria-label="Show more"
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </CardActions>
           </Card>
         </div>
         <Collapse
@@ -153,25 +161,25 @@ class EventCard extends Component {
         >
           <CardMedia className={classes.media} image={imageSrc} />
           <CardContent className={classes.eventDetails}>
+            <Typography variant="headline">Event start time: {time}</Typography>
             <Typography variant="headline" color="textSecondary">
-              {saleStatus}
+              {saleStatus === 'onsale' &&
+                `Ticket ${saleStatus}: ${saleStartString}`}
             </Typography>
             <Typography variant="headline" color="textSecondary">
-              {saleStart}
-            </Typography>
-            <Typography variant="headline" color="textSecondary">
-              {genre !== 'Undefined' && `Genre: ${genre}`}
+              {genre !== 'Undefined' && `Genre:  ${genre}`}
             </Typography>
             <Typography
-              variant="subheading"
+              className={classes.headliners}
+              variant="title"
               color="textSecondary"
               component="ul"
-              classes={{ root: classes.headlinerList }}
             >
-              Artists:
               {headliners &&
                 headliners.map(headliner => (
-                  <li key={headliner.id}>{headliner.name}</li>
+                  <li key={headliner.id} className={classes.listItem}>
+                    {headliner.name}
+                  </li>
                 ))}
             </Typography>
           </CardContent>

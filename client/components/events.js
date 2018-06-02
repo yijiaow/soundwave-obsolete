@@ -25,6 +25,8 @@ export const Events = props => {
             headliners={event._embedded.attractions}
             imageSrc={event.images[0].url}
             genre={event.classifications[0].genre.name}
+            saleStatus={event.dates.status.code}
+            saleStart={event.sales.public.startDateTime}
           />
         )
       })}

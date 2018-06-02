@@ -26,11 +26,11 @@ export default createMuiTheme({
       fontWeight: 200
     },
     display1: {
-      fontSize: '1.6rem',
+      fontSize: '1.8rem',
       fontWeight: 200
     },
     title: {
-      fontSize: '1.1rem',
+      fontSize: '1.2rem',
       fontWeight: 400
     }
   }
