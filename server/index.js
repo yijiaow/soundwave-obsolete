@@ -11,44 +11,60 @@ const AWS = require('aws-sdk')
 const app = express()
 
 const API_KEY = process.env.TICKETMASTER_KEY
-
-app.listen(process.env.PORT, () =>
-  console.log(`Express app listening on port ${process.env.PORT}!`)
-)
 AWS.config.update({
   region: 'us-west-1',
   endpoint: 'http://localhost:8000'
 })
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-app.use(express.static(path.join(__dirname, '/../assets')))
-app.use(express.static(path.join(__dirname, '/')))
+app.listen(process.env.PORT)
+app
+  .use(express.static(path.join(__dirname, '/../assets')))
+  .use(express.static(path.join(__dirname, '/')))
 
-app.use(bodyParser.json())
-app.post('/signup', (req, res) => {
-  const { email, password } = req.body
-  const saltRounds = 10
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    if (err) {
-      res.status(500).json({ error: `Internal Server Error: ${err}` })
-    }
-    const params = {
-      TableName: 'Users',
-      Item: { email, hash }
-    }
-    docClient.put(params, err => {
+  .use(bodyParser.json())
+  .post('/signup', (req, res) => {
+    const { email, password } = req.body
+    const saltRounds = 10
+    bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
-        console.error(
-          'Unable to add user. Error JSON:',
-          JSON.stringify(err, null, 2)
-        )
+        res.status(500).json({ error: `Internal Server Error: ${err}` })
       }
-      else {
-        res.sendStatus(201)
+      const params = {
+        TableName: 'Users',
+        Item: { email, passwordHash: hash }
       }
+      docClient.put(params, err => {
+        if (err) {
+          console.error(
+            'Unable to add user. Error JSON:',
+            JSON.stringify(err, null, 2)
+          )
+        }
+        else {
+          res.sendStatus(201)
+        }
+      })
     })
   })
-})
+  .post('/signin', (req, res) => {
+    const { email, password } = req.body
+    const user = docClient.get(
+      { TableName: 'Users', Key: { email } },
+      (err, data) => {
+        if (err) {
+          console.error(
+            'Unable to find item. Error JSON:',
+            JSON.stringify(err, null, 2)
+          )
+          res.status(500).json({ error: `Internal Server Error: ${err}` })
+        }
+        else {
+          res.sendStatus(200)
+        }
+      }
+    )
+  })
 app.get('/events/search', (req, res) => {
   const queryString = req.url.split('?')[1]
   request(
