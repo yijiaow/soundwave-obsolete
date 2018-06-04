@@ -32,7 +32,7 @@ app
       }
       const params = {
         TableName: 'Users',
-        Item: { email, passwordHash: hash }
+        Item: { email, hash }
       }
       docClient.put(params, err => {
         if (err) {
@@ -50,8 +50,13 @@ app
   .post('/signin', (req, res) => {
     const { email, password } = req.body
     const user = docClient.get(
-      { TableName: 'Users', Key: { email } },
-      (err, data) => {
+      {
+        TableName: 'Users',
+        Key: { email },
+        ProjectionExpression: '#h',
+        ExpressionAttributeNames: { '#h': 'hash' }
+      },
+      async (err, data) => {
         if (err) {
           console.error(
             'Unable to find item. Error JSON:',
@@ -60,7 +65,19 @@ app
           res.status(500).json({ error: `Internal Server Error: ${err}` })
         }
         else {
-          res.sendStatus(200)
+          const passwordHash = data.Item.hash
+          try {
+            const isMatch = await bcrypt.compare(password, passwordHash)
+            if (isMatch) {
+              const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
+              res.status(201).json({ email, token })
+            }
+            res.status(401).json({ error: 'Unauthorized' })
+          }
+          catch (err) {
+            console.error(err)
+            res.status(500).json({ error: 'Internal Server Error' })
+          }
         }
       }
     )
