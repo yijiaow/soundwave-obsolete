@@ -5,11 +5,15 @@ import Button from '@material-ui/core/Button'
 
 const styles = {
   container: {
-    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    width: 400,
-    height: 300
+    width: 360,
+    height: 300,
+    padding: 30,
+    borderRadius: 30
+  },
+  button: {
+    margin: '24px 0'
   }
 }
 
@@ -102,9 +106,11 @@ class SignupForm extends Component {
           onBlur={this.handleValidate}
         />
         <Button
+          className={classes.button}
           type="submit"
           color="secondary"
-          variant="raised"
+          size="large"
+          variant="contained"
           disabled={disabled}
         >
           Create Account

@@ -5,11 +5,15 @@ import Button from '@material-ui/core/Button'
 
 const styles = {
   container: {
-    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    width: 400,
-    height: 300
+    width: 360,
+    height: 300,
+    padding: 30,
+    borderRadius: 30
+  },
+  button: {
+    margin: '24px 0'
   }
 }
 class SigninForm extends Component {
@@ -59,8 +63,14 @@ class SigninForm extends Component {
           label="Password"
           type="password"
         />
-        <Button type="submit" color="primary" variant="raised">
-          Login
+        <Button
+          className={classes.button}
+          type="submit"
+          color="primary"
+          size="large"
+          variant="contained"
+        >
+          Sign In
         </Button>
       </form>
     )
