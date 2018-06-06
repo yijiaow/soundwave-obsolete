@@ -108,3 +108,29 @@ app.get('/genres/all', (req, res) => {
     }
   )
 })
+function authorize(req, res, next) {
+  const token = req.get('token')
+  if (!token) {
+    return res.status(403).json({
+      error: 'Forbidden'
+    })
+  }
+  try {
+    req.user = jwt.verify(token, process.env.TOKEN_SECRET)
+    next()
+  }
+  catch (err) {
+    if (
+      err instanceof jwt.TokenExpiredError ||
+      err instanceof jwt.JsonWebTokenError
+    ) {
+      return res.status(403).json({
+        error: 'Forbidden'
+      })
+    }
+    console.error(err)
+    res.status(500).json({
+      error: 'Internal Server Error'
+    })
+  }
+}
