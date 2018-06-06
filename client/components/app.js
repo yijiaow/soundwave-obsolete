@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
-import { ErrorBoundary } from './error'
-import KeywordForm from './keywordForm'
-import LocationForm from './locationForm'
-import Carousel from './carousel'
-import { Events } from './events'
-import Genres from './genres'
+import KeywordForm from './KeywordForm'
+import LocationForm from './LocationForm'
+import SignupForm from './SignupForm'
+import SigninForm from './SigninForm'
+import Genres from './Genres'
+import Carousel from './Carousel'
+import { Events } from './Events'
+import { ErrorBoundary } from './Error'
 
 import festivals from '../../data/festivals'
 import genres from '../../data/genres'
 
-const styles = {
+const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column'
@@ -25,8 +27,12 @@ const styles = {
     height: 80,
     padding: '10px 40px'
   },
-  searchBar: {
-    width: 150
+  searchContainer: {
+    display: 'flex',
+    alignItems: 'flex-end'
+  },
+  userContainer: {
+    display: 'flex'
   },
   section: {
     alignSelf: 'center',
@@ -34,7 +40,7 @@ const styles = {
     maxWidth: 760,
     marginTop: 120
   }
-}
+})
 const serialize = obj => {
   const queries = []
   for (let [key, value] of Object.entries(obj)) {
@@ -48,11 +54,25 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      params: { city: 'Los Angeles', state: 'CA', zipcode: '' },
+      signupOpen: false,
+      signinOpen: false,
+      params: {
+        city: 'Los Angeles',
+        state: 'CA',
+        zipcode: ''
+      },
       searchResults: null
     }
+    this.handleSignupForm = this.handleSignupForm.bind(this)
+    this.handleSigninForm = this.handleSigninForm.bind(this)
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
+  }
+  handleSignupForm() {
+    this.setState({ signupOpen: !this.state.signupOpen })
+  }
+  handleSigninForm() {
+    this.setState({ signinOpen: !this.state.signinOpen })
   }
   handleLocationUpdate(location) {
     this.setState({ params: location })
@@ -80,12 +100,18 @@ class App extends Component {
         <div className={classes.root}>
           <AppBar className={classes.appBar}>
             <Typography variant="display2">SoundWave</Typography>
-            <KeywordForm search={this.handleSearch} />
-            <LocationForm
-              search={this.handleSearch}
-              updateLocation={this.handleLocationUpdate}
-              currentLocation={this.state.params}
-            />
+            <div className={classes.searchContainer}>
+              <KeywordForm search={this.handleSearch} />
+              <LocationForm
+                search={this.handleSearch}
+                updateLocation={this.handleLocationUpdate}
+                currentLocation={this.state.params}
+              />
+            </div>
+            <div className={classes.userContainer}>
+              <SignupForm />
+              <SigninForm />
+            </div>
           </AppBar>
           <Genres genres={genres} search={this.handleSearch} />
           <section className={classes.section}>

@@ -21,7 +21,8 @@ const styles = {
     height: 400
   },
   slide: {
-    position: 'absolute'
+    position: 'absolute',
+    boxShadow: '0 0 100px 20px #10021C'
   },
   middle: {
     left: '50%',
@@ -29,10 +30,12 @@ const styles = {
     zIndex: 5
   },
   left: {
+    top: 24,
     left: 0,
     zIndex: 4
   },
   right: {
+    top: 24,
     right: 0,
     zIndex: 3
   },

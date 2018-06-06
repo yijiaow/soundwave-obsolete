@@ -1,34 +1,49 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
+import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
-const styles = {
+const styles = theme => ({
+  root: {
+    marginRight: 18,
+    backgroundColor: theme.palette.primary.light,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: 'rgba(224,64,251,0.4)'
+    }
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'space-between',
     width: 360,
-    height: 300,
     padding: 30,
     borderRadius: 30
   },
   button: {
-    margin: '24px 0'
+    marginTop: 36
   }
-}
+})
 
 class SignupForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      formOpen: false,
       email: '',
       password: '',
       confirmPassword: '',
       errors: { password: '', confirmPassword: '' }
     }
+    this.handleForm = this.handleForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleValidate = this.handleValidate.bind(this)
+  }
+  handleForm() {
+    this.setState({ formOpen: !this.state.formOpen })
   }
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value })
@@ -58,7 +73,12 @@ class SignupForm extends Component {
       body: JSON.stringify({ email, password })
     })
       .then(() => {
-        this.setState({ email: '', password: '', confirmPassword: '' })
+        this.setState({
+          formOpen: false,
+          email: '',
+          password: '',
+          confirmPassword: ''
+        })
       })
       .catch(err => console.error(err))
   }
@@ -68,54 +88,64 @@ class SignupForm extends Component {
       this.state.email === '' ||
       Object.values(this.state.errors).some(error => error !== '')
     return (
-      <form
-        id="signup"
-        autoComplete="off"
-        noValidate
-        className={classes.container}
-        onSubmit={this.handleSubmit}
-      >
-        <TextField
-          required
-          name="email"
-          id="email"
-          label="Email"
-          value={this.state.email}
-          onChange={this.handleChange}
-        />
-        <TextField
-          required
-          name="password"
-          id="password"
-          label="Password"
-          type="password"
-          value={this.state.password}
-          helperText={this.state.errors.password}
-          onChange={this.handleChange}
-          onBlur={this.handleValidate}
-        />
-        <TextField
-          required
-          name="confirmPassword"
-          id="confirm-password"
-          label="Confirm Password"
-          type="password"
-          value={this.state.confirmPassword}
-          helperText={this.state.errors.confirmPassword}
-          onChange={this.handleChange}
-          onBlur={this.handleValidate}
-        />
+      <div>
         <Button
-          className={classes.button}
-          type="submit"
-          color="secondary"
-          size="large"
+          className={classes.root}
           variant="contained"
-          disabled={disabled}
+          onClick={this.handleForm}
         >
-          Create Account
+          New User
         </Button>
-      </form>
+        <Dialog open={this.state.formOpen} onClose={this.handleForm}>
+          <form
+            autoComplete="off"
+            noValidate
+            className={classes.container}
+            onSubmit={this.handleSubmit}
+          >
+            <TextField
+              required
+              name="email"
+              id="email"
+              label="Email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+            <TextField
+              required
+              name="password"
+              id="password"
+              label="Password"
+              type="password"
+              value={this.state.password}
+              helperText={this.state.errors.password}
+              onChange={this.handleChange}
+              onBlur={this.handleValidate}
+            />
+            <TextField
+              required
+              name="confirmPassword"
+              id="confirm-password"
+              label="Confirm Password"
+              type="password"
+              value={this.state.confirmPassword}
+              helperText={this.state.errors.confirmPassword}
+              onChange={this.handleChange}
+              onBlur={this.handleValidate}
+            />
+            <Button
+              className={classes.button}
+              type="submit"
+              color="secondary"
+              size="large"
+              variant="contained"
+              disabled={disabled}
+            >
+              Create Account
+            </Button>
+          </form>
+        </Dialog>
+      </div>
     )
   }
 }
