@@ -22,8 +22,7 @@ class SigninForm extends Component {
     this.state = {
       formOpen: false,
       email: '',
-      password: '',
-      loginStatus: false
+      password: ''
     }
     this.handleForm = this.handleForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -45,7 +44,8 @@ class SigninForm extends Component {
     })
       .then(res => res.json())
       .then(user => {
-        this.setState({ email: '', password: '', loginStatus: true, user })
+        this.setState({ email: '', password: '' })
+        this.props.getUser(user)
       })
       .catch(err => console.error(err))
   }
@@ -76,6 +76,7 @@ class SigninForm extends Component {
               id="password"
               label="Password"
               type="password"
+              onChange={this.handleChange}
             />
             <Button
               className={classes.button}

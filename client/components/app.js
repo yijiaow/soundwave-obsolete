@@ -65,6 +65,7 @@ class App extends Component {
     }
     this.handleSignupForm = this.handleSignupForm.bind(this)
     this.handleSigninForm = this.handleSigninForm.bind(this)
+    this.handleCurrentUser = this.handleCurrentUser.bind(this)
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
   }
@@ -73,6 +74,9 @@ class App extends Component {
   }
   handleSigninForm() {
     this.setState({ signinOpen: !this.state.signinOpen })
+  }
+  handleCurrentUser(user) {
+    this.setState({ currentUser: user.email })
   }
   handleLocationUpdate(location) {
     this.setState({ params: location })
@@ -108,10 +112,16 @@ class App extends Component {
                 currentLocation={this.state.params}
               />
             </div>
-            <div className={classes.userContainer}>
-              <SignupForm />
-              <SigninForm />
-            </div>
+            {this.state.currentUser ? (
+              <Typography variant="headline">
+                {this.state.currentUser}
+              </Typography>
+            ) : (
+              <div className={classes.userContainer}>
+                <SignupForm />
+                <SigninForm getUser={this.handleCurrentUser} />
+              </div>
+            )}
           </AppBar>
           <Genres genres={genres} search={this.handleSearch} />
           <section className={classes.section}>

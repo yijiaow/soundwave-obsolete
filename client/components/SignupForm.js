@@ -40,7 +40,8 @@ class SignupForm extends Component {
     this.handleForm = this.handleForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleValidate = this.handleValidate.bind(this)
+    this.validatePassword = this.validatePassword.bind(this)
+    this.confirmPassword = this.confirmPassword.bind(this)
   }
   handleForm() {
     this.setState({ formOpen: !this.state.formOpen })
@@ -48,20 +49,20 @@ class SignupForm extends Component {
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value })
   }
-  handleValidate(event) {
+  validatePassword() {
     const errors = this.state.errors
-    if (event.target.name === 'password') {
-      errors['password'] =
-        this.state.password.length >= 8
-          ? ''
-          : 'Password needs to be at least 8 characters long.'
-    }
-    if (event.target.name === 'confirmPassword') {
-      errors['confirmPassword'] =
-        this.state.password === this.state.confirmPassword
-          ? ''
-          : 'Password confirmation does not match Password.'
-    }
+    errors['password'] =
+      this.state.password.length >= 8
+        ? ''
+        : 'Password needs to be at least 8 characters long.'
+    this.setState({ errors })
+  }
+  confirmPassword() {
+    const errors = this.state.errors
+    errors['confirmPassword'] =
+      this.state.password === this.state.confirmPassword
+        ? ''
+        : 'Password confirmation does not match Password.'
     this.setState({ errors })
   }
   handleSubmit(event) {
@@ -131,7 +132,7 @@ class SignupForm extends Component {
               value={this.state.confirmPassword}
               helperText={this.state.errors.confirmPassword}
               onChange={this.handleChange}
-              onBlur={this.handleValidate}
+              onKeyUp={this.handleValidate}
             />
             <Button
               className={classes.button}
