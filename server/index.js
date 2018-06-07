@@ -21,15 +21,12 @@ app.listen(process.env.PORT)
 app
   .use(express.static(path.join(__dirname, '/../assets')))
   .use(express.static(path.join(__dirname, '/')))
-
   .use(bodyParser.json())
-  .post('/signup', (req, res) => {
+  .post('/signup', async (req, res) => {
     const { email, password } = req.body
     const saltRounds = 10
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-      if (err) {
-        res.status(500).json({ error: `Internal Server Error: ${err}` })
-      }
+    try {
+      const hash = await bcrypt.hash(password, saltRounds)
       const params = {
         TableName: 'Users',
         Item: { email, hash }
@@ -42,10 +39,14 @@ app
           )
         }
         else {
-          res.sendStatus(201)
+          const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
+          res.status(201).json({ email, token })
         }
       })
-    })
+    }
+    catch (err) {
+      res.status(500).json({ error: `Internal Server Error: ${err}` })
+    }
   })
   .post('/signin', (req, res) => {
     const { email, password } = req.body
@@ -72,7 +73,9 @@ app
               const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
               res.status(201).json({ email, token })
             }
-            res.status(401).json({ error: 'Unauthorized' })
+            else {
+              res.status(401).json({ error: 'Unauthorized' })
+            }
           }
           catch (err) {
             console.error(err)
@@ -108,3 +111,29 @@ app.get('/genres/all', (req, res) => {
     }
   )
 })
+function authorize(req, res, next) {
+  const token = req.get('token')
+  if (!token) {
+    return res.status(403).json({
+      error: 'Forbidden'
+    })
+  }
+  try {
+    req.user = jwt.verify(token, process.env.TOKEN_SECRET)
+    next()
+  }
+  catch (err) {
+    if (
+      err instanceof jwt.TokenExpiredError ||
+      err instanceof jwt.JsonWebTokenError
+    ) {
+      return res.status(403).json({
+        error: 'Forbidden'
+      })
+    }
+    console.error(err)
+    res.status(500).json({
+      error: 'Internal Server Error'
+    })
+  }
+}

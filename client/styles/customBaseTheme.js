@@ -15,7 +15,10 @@ export default createMuiTheme({
       main: cyan[700],
       dark: cyan[900]
     },
-    text: { primary: purple.A200 }
+    text: {
+      primary: purple.A200,
+      secondary: cyan[700]
+    }
   },
   typography: {
     fontFamily: "'Titillium Web', sans-serif",

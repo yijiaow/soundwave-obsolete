@@ -1,48 +1,67 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
+import Dialog from '@material-ui/core/Dialog'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
-const styles = {
+const styles = theme => ({
+  root: {
+    backgroundColor: theme.palette.primary.light,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: 'rgba(224,64,251,0.4)'
+    }
+  },
   container: {
-    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    width: 400,
-    height: 300
+    justifyContent: 'center',
+    alignItems: 'space-between',
+    width: 360,
+    padding: 30,
+    borderRadius: 30
+  },
+  button: {
+    marginTop: 36
   }
-}
+})
 
 class SignupForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      formOpen: false,
       email: '',
       password: '',
       confirmPassword: '',
       errors: { password: '', confirmPassword: '' }
     }
+    this.handleForm = this.handleForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleValidate = this.handleValidate.bind(this)
+    this.validatePassword = this.validatePassword.bind(this)
+    this.confirmPassword = this.confirmPassword.bind(this)
+  }
+  handleForm() {
+    this.setState({ formOpen: !this.state.formOpen })
   }
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value })
   }
-  handleValidate(event) {
+  validatePassword() {
     const errors = this.state.errors
-    if (event.target.name === 'password') {
-      errors['password'] =
-        this.state.password.length >= 8
-          ? ''
-          : 'Password needs to be at least 8 characters long.'
-    }
-    if (event.target.name === 'confirmPassword') {
-      errors['confirmPassword'] =
-        this.state.password === this.state.confirmPassword
-          ? ''
-          : 'Password confirmation does not match Password.'
-    }
+    errors['password'] =
+      this.state.password.length >= 8
+        ? ''
+        : 'Password needs to be at least 8 characters long.'
+    this.setState({ errors })
+  }
+  confirmPassword() {
+    const errors = this.state.errors
+    errors['confirmPassword'] =
+      this.state.password === this.state.confirmPassword
+        ? ''
+        : 'Password confirmation does not match Password.'
     this.setState({ errors })
   }
   handleSubmit(event) {
@@ -53,8 +72,11 @@ class SignupForm extends Component {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ email, password })
     })
-      .then(() => {
-        this.setState({ email: '', password: '', confirmPassword: '' })
+      .then(res => res.json())
+      .then(user => {
+        sessionStorage.setItem('user', user.email)
+        sessionStorage.setItem('token', user.token)
+        this.props.onAutoSignin()
       })
       .catch(err => console.error(err))
   }
@@ -64,52 +86,64 @@ class SignupForm extends Component {
       this.state.email === '' ||
       Object.values(this.state.errors).some(error => error !== '')
     return (
-      <form
-        id="signup"
-        autoComplete="off"
-        noValidate
-        className={classes.container}
-        onSubmit={this.handleSubmit}
-      >
-        <TextField
-          required
-          name="email"
-          id="email"
-          label="Email"
-          value={this.state.email}
-          onChange={this.handleChange}
-        />
-        <TextField
-          required
-          name="password"
-          id="password"
-          label="Password"
-          type="password"
-          value={this.state.password}
-          helperText={this.state.errors.password}
-          onChange={this.handleChange}
-          onBlur={this.handleValidate}
-        />
-        <TextField
-          required
-          name="confirmPassword"
-          id="confirm-password"
-          label="Confirm Password"
-          type="password"
-          value={this.state.confirmPassword}
-          helperText={this.state.errors.confirmPassword}
-          onChange={this.handleChange}
-          onBlur={this.handleValidate}
-        />
+      <div>
         <Button
-          type="submit"
-          color="secondary"
-          variant="raised"
-          disabled={disabled}
+          className={classes.root}
+          variant="contained"
+          onClick={this.handleForm}
         >
-          Create Account
+          New User
         </Button>
-      </form>
+        <Dialog open={this.state.formOpen} onClose={this.handleForm}>
+          <form
+            autoComplete="off"
+            noValidate
+            className={classes.container}
+            onSubmit={this.handleSubmit}
+          >
+            <TextField
+              required
+              name="email"
+              id="email"
+              label="Email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+            <TextField
+              required
+              name="password"
+              id="password"
+              label="Password"
+              type="password"
+              value={this.state.password}
+              helperText={this.state.errors.password}
+              onChange={this.handleChange}
+              onBlur={this.validatePassword}
+            />
+            <TextField
+              required
+              name="confirmPassword"
+              id="confirm-password"
+              label="Confirm Password"
+              type="password"
+              value={this.state.confirmPassword}
+              helperText={this.state.errors.confirmPassword}
+              onChange={this.handleChange}
+              onKeyUp={this.confirmPassword}
+            />
+            <Button
+              className={classes.button}
+              type="submit"
+              color="secondary"
+              size="large"
+              variant="contained"
+              disabled={disabled}
+            >
+              Create Account
+            </Button>
+          </form>
+        </Dialog>
+      </div>
     )
   }
 }

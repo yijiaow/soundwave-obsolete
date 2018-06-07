@@ -2,9 +2,13 @@ import React, { Component } from 'react'
 import Button from '@material-ui/core/Button'
 import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
+  root: {
+    color: 'red'
+  },
   dropdown: {
     display: 'flex',
     flexDirection: 'column',
@@ -14,6 +18,9 @@ const styles = {
   button: {
     marginTop: 20,
     borderRadius: 20
+  },
+  location: {
+    color: 'white'
   }
 }
 export class LocationForm extends Component {
@@ -62,12 +69,10 @@ export class LocationForm extends Component {
     const stateString = location.state && `, ${location.state}`
     return (
       <div>
-        <Button
-          variant="flat"
-          className={classes.location}
-          onClick={this.handleOpen}
-        >
-          {`${location.city} ${stateString}  ${location.zipcode}`}
+        <Button onClick={this.handleOpen}>
+          <Typography variant="title" color="textSecondary">{`${
+            location.city
+          } ${stateString}  ${location.zipcode}`}</Typography>
         </Button>
         <Popover
           open={open}

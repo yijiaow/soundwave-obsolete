@@ -1,23 +1,38 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
+  root: {
+    marginLeft: 18
+  },
   container: {
-    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    width: 400,
-    height: 300
+    width: 360,
+    padding: 30,
+    borderRadius: 30
+  },
+  button: {
+    marginTop: 36
   }
 }
 class SigninForm extends Component {
   constructor(props) {
     super(props)
-    this.state = { email: '', password: '', loginStatus: false }
+    this.state = {
+      formOpen: false,
+      email: '',
+      password: ''
+    }
+    this.handleForm = this.handleForm.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+  handleForm() {
+    this.setState({ formOpen: !this.state.formOpen })
   }
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value })
@@ -32,37 +47,58 @@ class SigninForm extends Component {
     })
       .then(res => res.json())
       .then(user => {
-        this.setState({ email: '', password: '', loginStatus: true, user })
+        sessionStorage.setItem('user', user.email)
+        sessionStorage.setItem('token', user.token)
+        this.props.onSignin()
       })
       .catch(err => console.error(err))
   }
   render() {
     const { classes } = this.props
     return (
-      <form
-        autoComplete="off"
-        className={classes.container}
-        onSubmit={this.handleSubmit}
-      >
-        <TextField
-          required
-          name="email"
-          id="email"
-          label="Email"
-          value={this.state.email}
-          onChange={this.handleChange}
-        />
-        <TextField
-          required
-          name="password"
-          id="password"
-          label="Password"
-          type="password"
-        />
-        <Button type="submit" color="primary" variant="raised">
-          Login
+      <div>
+        <Button
+          className={classes.root}
+          variant="outlined"
+          onClick={this.handleForm}
+        >
+          Sign In
         </Button>
-      </form>
+        <Dialog open={this.state.formOpen} onClose={this.handleForm}>
+          <form
+            autoComplete="off"
+            noValidate
+            className={classes.container}
+            onSubmit={this.handleSubmit}
+          >
+            <TextField
+              required
+              name="email"
+              id="email"
+              label="Email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+            <TextField
+              required
+              name="password"
+              id="password"
+              label="Password"
+              type="password"
+              onChange={this.handleChange}
+            />
+            <Button
+              className={classes.button}
+              type="submit"
+              color="secondary"
+              size="large"
+              variant="contained"
+            >
+              Sign In
+            </Button>
+          </form>
+        </Dialog>
+      </div>
     )
   }
 }
