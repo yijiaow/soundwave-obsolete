@@ -63,20 +63,25 @@ class App extends Component {
       },
       searchResults: null
     }
+    this.displayCurrentUser = this.displayCurrentUser.bind(this)
     this.handleSignupForm = this.handleSignupForm.bind(this)
     this.handleSigninForm = this.handleSigninForm.bind(this)
-    this.handleCurrentUser = this.handleCurrentUser.bind(this)
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
+  }
+  componentDidMount() {
+    this.displayCurrentUser()
+  }
+  displayCurrentUser() {
+    if (sessionStorage.getItem('token')) {
+      this.setState({ currentUser: sessionStorage.getItem('user') })
+    }
   }
   handleSignupForm() {
     this.setState({ signupOpen: !this.state.signupOpen })
   }
   handleSigninForm() {
     this.setState({ signinOpen: !this.state.signinOpen })
-  }
-  handleCurrentUser(user) {
-    this.setState({ currentUser: user.email })
   }
   handleLocationUpdate(location) {
     this.setState({ params: location })
@@ -119,7 +124,7 @@ class App extends Component {
             ) : (
               <div className={classes.userContainer}>
                 <SignupForm />
-                <SigninForm getUser={this.handleCurrentUser} />
+                <SigninForm onSignin={this.displayCurrentUser} />
               </div>
             )}
           </AppBar>

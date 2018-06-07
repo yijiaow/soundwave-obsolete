@@ -44,8 +44,9 @@ class SigninForm extends Component {
     })
       .then(res => res.json())
       .then(user => {
-        this.setState({ email: '', password: '' })
-        this.props.getUser(user)
+        sessionStorage.setItem('user', user.email)
+        sessionStorage.setItem('token', user.token)
+        this.props.onSignin()
       })
       .catch(err => console.error(err))
   }

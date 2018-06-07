@@ -21,7 +21,6 @@ app.listen(process.env.PORT)
 app
   .use(express.static(path.join(__dirname, '/../assets')))
   .use(express.static(path.join(__dirname, '/')))
-
   .use(bodyParser.json())
   .post('/signup', (req, res) => {
     const { email, password } = req.body
@@ -72,7 +71,9 @@ app
               const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
               res.status(201).json({ email, token })
             }
-            res.status(401).json({ error: 'Unauthorized' })
+            else {
+              res.status(401).json({ error: 'Unauthorized' })
+            }
           }
           catch (err) {
             console.error(err)
