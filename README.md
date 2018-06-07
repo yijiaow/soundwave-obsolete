@@ -14,5 +14,9 @@ In your terminal, run:
 `npm run start`
 
 ## Demo
+### User authentication
+![sign-in](https://user-images.githubusercontent.com/19718392/41099875-aa70c638-6a14-11e8-9244-5b69442c410d.gif)
+### Change search location
 ![soundwave](https://user-images.githubusercontent.com/19718392/39989747-9facde10-571f-11e8-9b88-338ffcdbd88d.gif)
+### View event details
 ![view-event-details](https://user-images.githubusercontent.com/19718392/40878953-937cae1c-664d-11e8-88a7-74ca8ff783ed.gif)
