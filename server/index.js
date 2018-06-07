@@ -22,13 +22,11 @@ app
   .use(express.static(path.join(__dirname, '/../assets')))
   .use(express.static(path.join(__dirname, '/')))
   .use(bodyParser.json())
-  .post('/signup', (req, res) => {
+  .post('/signup', async (req, res) => {
     const { email, password } = req.body
     const saltRounds = 10
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-      if (err) {
-        res.status(500).json({ error: `Internal Server Error: ${err}` })
-      }
+    try {
+      const hash = await bcrypt.hash(password, saltRounds)
       const params = {
         TableName: 'Users',
         Item: { email, hash }
@@ -41,10 +39,14 @@ app
           )
         }
         else {
-          res.sendStatus(201)
+          const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
+          res.status(201).json({ email, token })
         }
       })
-    })
+    }
+    catch (err) {
+      res.status(500).json({ error: `Internal Server Error: ${err}` })
+    }
   })
   .post('/signin', (req, res) => {
     const { email, password } = req.body

@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   root: {
-    marginRight: 18,
     backgroundColor: theme.palette.primary.light,
     color: 'white',
     '&:hover': {
@@ -73,13 +72,11 @@ class SignupForm extends Component {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ email, password })
     })
-      .then(() => {
-        this.setState({
-          formOpen: false,
-          email: '',
-          password: '',
-          confirmPassword: ''
-        })
+      .then(res => res.json())
+      .then(user => {
+        sessionStorage.setItem('user', user.email)
+        sessionStorage.setItem('token', user.token)
+        this.props.onAutoSignin()
       })
       .catch(err => console.error(err))
   }
@@ -121,7 +118,7 @@ class SignupForm extends Component {
               value={this.state.password}
               helperText={this.state.errors.password}
               onChange={this.handleChange}
-              onBlur={this.handleValidate}
+              onBlur={this.validatePassword}
             />
             <TextField
               required
@@ -132,7 +129,7 @@ class SignupForm extends Component {
               value={this.state.confirmPassword}
               helperText={this.state.errors.confirmPassword}
               onChange={this.handleChange}
-              onKeyUp={this.handleValidate}
+              onKeyUp={this.confirmPassword}
             />
             <Button
               className={classes.button}

@@ -5,6 +5,9 @@ import TextField from '@material-ui/core/TextField'
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = {
+  root: {
+    marginLeft: 18
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -54,12 +57,17 @@ class SigninForm extends Component {
     const { classes } = this.props
     return (
       <div>
-        <Button variant="outlined" onClick={this.handleForm}>
+        <Button
+          className={classes.root}
+          variant="outlined"
+          onClick={this.handleForm}
+        >
           Sign In
         </Button>
         <Dialog open={this.state.formOpen} onClose={this.handleForm}>
           <form
             autoComplete="off"
+            noValidate
             className={classes.container}
             onSubmit={this.handleSubmit}
           >

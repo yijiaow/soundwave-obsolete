@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import KeywordForm from './KeywordForm'
@@ -34,6 +35,12 @@ const styles = theme => ({
   userContainer: {
     display: 'flex'
   },
+  user: {
+    alignSelf: 'center'
+  },
+  signoutButton: {
+    marginLeft: 18
+  },
   section: {
     alignSelf: 'center',
     width: '70%',
@@ -66,6 +73,7 @@ class App extends Component {
     this.displayCurrentUser = this.displayCurrentUser.bind(this)
     this.handleSignupForm = this.handleSignupForm.bind(this)
     this.handleSigninForm = this.handleSigninForm.bind(this)
+    this.handleSignout = this.handleSignout.bind(this)
     this.handleLocationUpdate = this.handleLocationUpdate.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
   }
@@ -82,6 +90,10 @@ class App extends Component {
   }
   handleSigninForm() {
     this.setState({ signinOpen: !this.state.signinOpen })
+  }
+  handleSignout() {
+    sessionStorage.clear()
+    this.setState({ currentUser: null })
   }
   handleLocationUpdate(location) {
     this.setState({ params: location })
@@ -118,12 +130,21 @@ class App extends Component {
               />
             </div>
             {this.state.currentUser ? (
-              <Typography variant="headline">
-                {this.state.currentUser}
-              </Typography>
+              <div className={classes.userContainer}>
+                <Typography className={classes.user} variant="title">
+                  {this.state.currentUser}
+                </Typography>
+                <Button
+                  className={classes.signoutButton}
+                  variant="outlined"
+                  onClick={this.handleSignout}
+                >
+                  Sign Out
+                </Button>
+              </div>
             ) : (
               <div className={classes.userContainer}>
-                <SignupForm />
+                <SignupForm onAutoSignin={this.displayCurrentUser} />
                 <SigninForm onSignin={this.displayCurrentUser} />
               </div>
             )}
