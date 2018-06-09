@@ -85,20 +85,48 @@ app
       }
     )
   })
-app.get('/events/search', (req, res) => {
-  const queryString = req.url.split('?')[1]
-  request(
-    `${
-      process.env.TICKETMASTER_URL
-    }/events.json?classificationName=music&${queryString}&apikey=${API_KEY}`,
-    (err, response, body) => {
-      if (err) {
-        console.log(err)
+  .get('/events/search', (req, res) => {
+    const queryString = req.url.split('?')[1]
+    request(
+      `${
+        process.env.TICKETMASTER_URL
+      }/events.json?classificationName=music&${queryString}&apikey=${API_KEY}`,
+      (err, response, body) => {
+        if (err) {
+          console.log(err)
+        }
+        res.json(JSON.parse(body)._embedded)
       }
-      res.json(JSON.parse(body)._embedded)
-    }
-  )
-})
+    )
+  })
+  .post('/events/:id/save', (req, res) => {
+    const { user, event } = req.body
+    console.log(user.email)
+    const savedEvents = docClient.update(
+      {
+        TableName: 'Users',
+        Key: { email: user.email },
+        UpdateExpression:
+          'SET events = list_append(if_not_exists(events, :new_list), :attrValue)',
+        ExpressionAttributeValues: {
+          ':new_list': [],
+          ':attrValue': [event]
+        },
+        ReturnValues: 'UPDATED_NEW'
+      },
+      (data, err) => {
+        if (err) {
+          console.error(
+            'Unable to find user record. Error JSON:',
+            JSON.stringify(err, null, 2)
+          )
+        }
+        else {
+          console.log('Updated item:', JSON.stringify(data, null, 2))
+        }
+      }
+    )
+  })
 
 app.get('/genres/all', (req, res) => {
   request(
@@ -111,6 +139,7 @@ app.get('/genres/all', (req, res) => {
     }
   )
 })
+
 function authorize(req, res, next) {
   const token = req.get('token')
   if (!token) {
@@ -120,6 +149,7 @@ function authorize(req, res, next) {
   }
   try {
     req.user = jwt.verify(token, process.env.TOKEN_SECRET)
+    console.log('authorized')
     next()
   }
   catch (err) {
