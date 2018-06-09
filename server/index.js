@@ -17,6 +17,18 @@ AWS.config.update({
 })
 const docClient = new AWS.DynamoDB.DocumentClient()
 
+var params = {
+  TableName: 'Users',
+  Key: { email: { S: 'admin0' } },
+  UpdateExpression:
+    'SET array = list_append(if_not_exists(array, :new_list), :attrValue)',
+  ExpressionAttributeValues: {
+    ':new_list': [],
+    ':attrValue': [{ S: 'element1' }]
+  },
+  ReturnValues: 'UPDATED_NEW'
+}
+
 app.listen(process.env.PORT)
 app
   .use(express.static(path.join(__dirname, '/../assets')))
@@ -50,6 +62,7 @@ app
   })
   .post('/signin', (req, res) => {
     const { email, password } = req.body
+    console.log(email)
     const user = docClient.get(
       {
         TableName: 'Users',
@@ -101,28 +114,31 @@ app
   })
   .post('/events/:id/save', (req, res) => {
     const { user, event } = req.body
-    console.log(user.email)
-    const savedEvents = docClient.update(
+    docClient.update(
       {
         TableName: 'Users',
-        Key: { email: user.email },
+        Key: { email: user },
         UpdateExpression:
-          'SET events = list_append(if_not_exists(events, :new_list), :attrValue)',
+          'SET #attrName = list_append(if_not_exists(#attrName, :new_list), :attrValue)',
+        ExpressionAttributeNames: {
+          '#attrName': 'events'
+        },
         ExpressionAttributeValues: {
           ':new_list': [],
           ':attrValue': [event]
         },
         ReturnValues: 'UPDATED_NEW'
       },
-      (data, err) => {
+      (err, data) => {
         if (err) {
           console.error(
-            'Unable to find user record. Error JSON:',
+            'Unable to update record. Error JSON:',
             JSON.stringify(err, null, 2)
           )
+          res.status(500).json({ error: `Internal Server Error: ${err}` })
         }
         else {
-          console.log('Updated item:', JSON.stringify(data, null, 2))
+          res.status(200).json(data)
         }
       }
     )
