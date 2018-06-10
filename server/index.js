@@ -112,6 +112,7 @@ app
       }
     )
   })
+  .use(authorize)
   .post('/events/:id/save', (req, res) => {
     const { user, event } = req.body
     docClient.update(
@@ -157,18 +158,18 @@ app.get('/genres/all', (req, res) => {
 })
 
 function authorize(req, res, next) {
-  const token = req.get('token')
+  const token = req.body.user.token
   if (!token) {
     return res.status(403).json({
-      error: 'Forbidden'
+      error: 'User not signed in'
     })
   }
   try {
     req.user = jwt.verify(token, process.env.TOKEN_SECRET)
-    console.log('authorized')
     next()
   }
   catch (err) {
+    console.log(err)
     if (
       err instanceof jwt.TokenExpiredError ||
       err instanceof jwt.JsonWebTokenError

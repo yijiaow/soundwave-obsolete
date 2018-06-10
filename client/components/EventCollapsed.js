@@ -97,10 +97,13 @@ class EventCard extends Component {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        user: 'admin0',
+        user: {
+          email: sessionStorage.getItem('email'),
+          token: sessionStorage.getItem('token')
+        },
         event: { id }
       })
-    })
+    }).catch(err => console.error(err))
   }
   render() {
     const { classes } = this.props
