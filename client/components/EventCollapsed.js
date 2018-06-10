@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Collapse from '@material-ui/core/Collapse'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
   card: {
@@ -45,9 +46,16 @@ const styles = theme => ({
     marginRight: 8,
     fontWeight: 400
   },
+  actions: {
+    justifyContent: 'flex-end',
+    width: '100%'
+  },
+  saveButton: {
+    position: 'absolute'
+  },
   icon: {
     position: 'absolute',
-    right: 240
+    left: '50%'
   },
   expandIconOpen: {
     transform: 'rotate(0deg)'
@@ -83,9 +91,21 @@ class EventCard extends Component {
       : 'expandIconClose'
     this.setState({ expanded: !this.state.expanded, expandIcon: iconStatus })
   }
+  handleSave(event) {
+    const id = event.currentTarget.dataset.id
+    fetch(`/events/${id}/save`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        user: 'admin0',
+        event: { id }
+      })
+    })
+  }
   render() {
     const { classes } = this.props
     const {
+      id,
       name,
       dateTime,
       venues,
@@ -141,7 +161,19 @@ class EventCard extends Component {
                   </li>
                 ))}
             </Typography>
-            <CardActions>
+            <CardActions
+              classes={{ root: classes.actions }}
+              disableActionSpacing
+            >
+              <Button
+                className={classes.saveButton}
+                variant="contained"
+                color="secondary"
+                data-id={id}
+                onClick={this.handleSave}
+              >
+                Track Event
+              </Button>
               <IconButton
                 className={`${classes.icon} ${classes[this.state.expandIcon]}`}
                 onClick={this.handleExpand}
