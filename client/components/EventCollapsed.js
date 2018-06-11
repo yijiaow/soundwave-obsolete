@@ -82,18 +82,24 @@ const styles = theme => ({
 class EventCard extends Component {
   constructor(props) {
     super(props)
-    this.state = { expanded: false, expandIcon: 'expandIconOpen' }
+    this.state = {
+      expanded: false,
+      expandIcon: 'expandIconOpen',
+      currentEvent: this.props
+    }
     this.handleExpand = this.handleExpand.bind(this)
+    this.handleSave = this.handleSave.bind(this)
   }
-  handleExpand() {
+  handleExpand(event) {
+    event.stopPropagation()
     const iconStatus = this.state.expanded
       ? 'expandIconOpen'
       : 'expandIconClose'
     this.setState({ expanded: !this.state.expanded, expandIcon: iconStatus })
   }
   handleSave(event) {
-    const id = event.currentTarget.dataset.id
-    fetch(`/events/${id}/save`, {
+    const saveEvent = JSON.parse(event.currentTarget.getAttribute('event'))
+    fetch(`/events/${saveEvent.id}/save`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -101,14 +107,13 @@ class EventCard extends Component {
           email: sessionStorage.getItem('email'),
           token: sessionStorage.getItem('token')
         },
-        event: { id }
+        event: saveEvent
       })
     }).catch(err => console.error(err))
   }
   render() {
     const { classes } = this.props
     const {
-      id,
       name,
       dateTime,
       venues,
@@ -130,7 +135,7 @@ class EventCard extends Component {
         .join(' ')
     }
     return (
-      <div>
+      <div event={JSON.stringify(this.props)} onClick={this.handleSave}>
         <div className={classes.card}>
           <Card className={classes.dateCard}>
             <CardContent className={classes.dateContent}>
@@ -172,8 +177,6 @@ class EventCard extends Component {
                 className={classes.saveButton}
                 variant="contained"
                 color="secondary"
-                data-id={id}
-                onClick={this.handleSave}
               >
                 Track Event
               </Button>
