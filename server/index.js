@@ -17,18 +17,6 @@ AWS.config.update({
 })
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-var params = {
-  TableName: 'Users',
-  Key: { email: { S: 'admin0' } },
-  UpdateExpression:
-    'SET array = list_append(if_not_exists(array, :new_list), :attrValue)',
-  ExpressionAttributeValues: {
-    ':new_list': [],
-    ':attrValue': [{ S: 'element1' }]
-  },
-  ReturnValues: 'UPDATED_NEW'
-}
-
 app.listen(process.env.PORT)
 app
   .use(express.static(path.join(__dirname, '/../assets')))
@@ -114,11 +102,12 @@ app
   })
   .use(authorize)
   .post('/events/:id/save', (req, res) => {
-    const { user, event } = req.body
+    const email = req.user.email
+    const event = req.body.event
     docClient.update(
       {
         TableName: 'Users',
-        Key: { email: user },
+        Key: { email: email },
         UpdateExpression:
           'SET #attrName = list_append(if_not_exists(#attrName, :new_list), :attrValue)',
         ExpressionAttributeNames: {
@@ -150,7 +139,7 @@ app.get('/genres/all', (req, res) => {
     `https://app.ticketmaster.com/discovery/v2/classifications/segments/KZFzniwnSyZfZ7v7nJ%20?apikey=${API_KEY}`,
     (err, response, body) => {
       if (err) {
-        console.log(err)
+        console.error(err)
       }
       res.send(JSON.parse(body)._embedded.genres)
     }
@@ -169,7 +158,6 @@ function authorize(req, res, next) {
     next()
   }
   catch (err) {
-    console.log(err)
     if (
       err instanceof jwt.TokenExpiredError ||
       err instanceof jwt.JsonWebTokenError
