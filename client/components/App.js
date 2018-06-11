@@ -33,7 +33,8 @@ const styles = theme => ({
     alignItems: 'flex-end'
   },
   userContainer: {
-    display: 'flex'
+    display: 'flex',
+    alignSelf: 'center'
   },
   user: {
     alignSelf: 'center'
@@ -120,7 +121,9 @@ class App extends Component {
       <ErrorBoundary>
         <div className={classes.root}>
           <AppBar className={classes.appBar}>
-            <Typography variant="display2">SoundWave</Typography>
+            <Typography variant="display3" color="secondary">
+              SoundWave
+            </Typography>
             <div className={classes.searchContainer}>
               <KeywordForm search={this.handleSearch} />
               <LocationForm

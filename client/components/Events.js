@@ -18,6 +18,7 @@ export const Events = props => {
         return (
           <EventCard
             key={event.id}
+            id={event.id}
             style={styles.eventCard}
             name={event.name}
             dateTime={event.dates.start.dateTime}

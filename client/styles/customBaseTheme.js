@@ -16,7 +16,7 @@ export default createMuiTheme({
       dark: cyan[900]
     },
     text: {
-      primary: purple.A200,
+      primary: 'rgba(255, 255, 255, 0.7)',
       secondary: cyan[700]
     }
   },
@@ -25,16 +25,27 @@ export default createMuiTheme({
     fontSize: 14,
     fontWeightLight: 200,
     fontWeightRegular: 400,
-    display2: {
+    display3: {
+      fontSize: '2.9rem',
       fontWeight: 200
+    },
+    display2: {
+      fontWeight: 400
     },
     display1: {
-      fontSize: '1.8rem',
-      fontWeight: 200
+      fontSize: '2.1rem',
+      fontWeight: 400,
+      color: purple.A200
     },
     title: {
-      fontSize: '1.2rem',
+      color: 'rgba(255, 255, 255, 0.7)',
+      fontSize: '1.25rem',
       fontWeight: 400
+    },
+    subheading: {
+      fontSize: '1.2rem',
+      fontWeight: 400,
+      color: purple.A200
     }
   }
 })

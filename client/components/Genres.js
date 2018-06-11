@@ -12,13 +12,13 @@ const styles = theme => ({
     justifyContent: 'space-around',
     alignSelf: 'center'
   },
-  btn: {
+  button: {
     width: 84,
     height: 40,
     margin: 10,
     borderRadius: 15,
     border: `2px solid ${theme.palette.secondary.light}`,
-    color: theme.palette.text.secondary,
+    color: theme.palette.secondary.main,
     fontSize: 14,
     textTransform: 'capitalize',
     boxShadow: '0 0 25px'
@@ -64,7 +64,7 @@ class Genres extends Component {
           <Button
             focusRipple
             key={genre.id}
-            className={`${classes.btn} ${
+            className={`${classes.button} ${
               this.state.selectedIndex === i ? classes.selected : ''
             }`}
             onClick={() => {
@@ -75,7 +75,11 @@ class Genres extends Component {
             {genre.name}
           </Button>
         ))}
-        <Button key="more" className={classes.btn} onClick={this.fetchGenres}>
+        <Button
+          key="more"
+          className={classes.button}
+          onClick={this.fetchGenres}
+        >
           More
         </Button>
       </List>

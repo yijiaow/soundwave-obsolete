@@ -50,6 +50,7 @@ app
   })
   .post('/signin', (req, res) => {
     const { email, password } = req.body
+    console.log(email)
     const user = docClient.get(
       {
         TableName: 'Users',
@@ -85,37 +86,71 @@ app
       }
     )
   })
-app.get('/events/search', (req, res) => {
-  const queryString = req.url.split('?')[1]
-  request(
-    `${
-      process.env.TICKETMASTER_URL
-    }/events.json?classificationName=music&${queryString}&apikey=${API_KEY}`,
-    (err, response, body) => {
-      if (err) {
-        console.log(err)
+  .get('/events/search', (req, res) => {
+    const queryString = req.url.split('?')[1]
+    request(
+      `${
+        process.env.TICKETMASTER_URL
+      }/events.json?classificationName=music&${queryString}&apikey=${API_KEY}`,
+      (err, response, body) => {
+        if (err) {
+          console.log(err)
+        }
+        res.json(JSON.parse(body)._embedded)
       }
-      res.json(JSON.parse(body)._embedded)
-    }
-  )
-})
+    )
+  })
+  .use(authorize)
+  .post('/events/:id/save', (req, res) => {
+    const email = req.user.email
+    const event = req.body.event
+    docClient.update(
+      {
+        TableName: 'Users',
+        Key: { email: email },
+        UpdateExpression:
+          'SET #attrName = list_append(if_not_exists(#attrName, :new_list), :attrValue)',
+        ExpressionAttributeNames: {
+          '#attrName': 'events'
+        },
+        ExpressionAttributeValues: {
+          ':new_list': [],
+          ':attrValue': [event]
+        },
+        ReturnValues: 'UPDATED_NEW'
+      },
+      (err, data) => {
+        if (err) {
+          console.error(
+            'Unable to update record. Error JSON:',
+            JSON.stringify(err, null, 2)
+          )
+          res.status(500).json({ error: `Internal Server Error: ${err}` })
+        }
+        else {
+          res.status(200).json(data)
+        }
+      }
+    )
+  })
 
 app.get('/genres/all', (req, res) => {
   request(
     `https://app.ticketmaster.com/discovery/v2/classifications/segments/KZFzniwnSyZfZ7v7nJ%20?apikey=${API_KEY}`,
     (err, response, body) => {
       if (err) {
-        console.log(err)
+        console.error(err)
       }
       res.send(JSON.parse(body)._embedded.genres)
     }
   )
 })
+
 function authorize(req, res, next) {
-  const token = req.get('token')
+  const token = req.body.user.token
   if (!token) {
     return res.status(403).json({
-      error: 'Forbidden'
+      error: 'User not signed in'
     })
   }
   try {
