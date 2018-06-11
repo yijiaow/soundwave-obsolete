@@ -1,5 +1,5 @@
 import React from 'react'
-import EventCard from './eventCollapsed'
+import EventCard from './EventCollapsed'
 
 const styles = {
   root: {
