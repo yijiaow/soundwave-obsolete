@@ -3,7 +3,6 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
 import Collapse from '@material-ui/core/Collapse'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import IconButton from '@material-ui/core/IconButton'
@@ -25,14 +24,15 @@ const styles = theme => ({
     borderRadius: 12
   },
   dateContent: {
-    padding: 20,
-    ':last-child': {
-      paddingBottom: 18
-    }
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: 36,
+    textAligh: 'center'
   },
   eventCard: {
     backgroundColor: 'transparent',
-    width: '100%',
+    width: '80%',
     marginLeft: 20,
     marginRight: 40
   },
@@ -46,16 +46,19 @@ const styles = theme => ({
     marginRight: 8,
     fontWeight: 400
   },
-  actions: {
-    justifyContent: 'flex-end',
-    width: '100%'
+  actionCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    width: 100
   },
   saveButton: {
-    position: 'absolute'
+    marginRight: 15,
+    whiteSpace: 'nowrap'
   },
   icon: {
-    position: 'absolute',
-    left: '50%'
+    alignSelf: 'flex-end'
   },
   expandIconOpen: {
     transform: 'rotate(0deg)'
@@ -74,8 +77,7 @@ const styles = theme => ({
   },
   eventDetails: {
     display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 0
+    flexDirection: 'column'
   }
 })
 
@@ -114,6 +116,7 @@ class EventCard extends Component {
   render() {
     const { classes } = this.props
     const {
+      id,
       name,
       dateTime,
       venues,
@@ -135,25 +138,42 @@ class EventCard extends Component {
         .join(' ')
     }
     return (
-      <div event={JSON.stringify(this.props)} onClick={this.handleSave}>
+      <div
+        event={JSON.stringify({
+          id,
+          name,
+          dateTime,
+          venues,
+          headliners,
+          imageSrc,
+          genre,
+          saleStatus,
+          saleStartString
+        })}
+        onClick={this.handleSave}
+      >
         <div className={classes.card}>
           <Card className={classes.dateCard}>
             <CardContent className={classes.dateContent}>
-              <Typography variant="title" color="textSecondary">
+              <Typography variant="headline" color="secondary">
                 {month.toUpperCase()}
               </Typography>
-              <Typography variant="display1">{day}</Typography>
-              <Typography variant="title">{dayOfWeek.toUpperCase()}</Typography>
+              <Typography variant="headline" color="secondary">
+                {day}
+              </Typography>
+              <Typography variant="display1">
+                {dayOfWeek.toUpperCase()}
+              </Typography>
             </CardContent>
           </Card>
           <Card className={classes.eventCard}>
             <Typography variant="headline" color="secondary" gutterBottom>
               {name}
             </Typography>
-            <Typography variant="title" color="textSecondary" gutterBottom>
+            <Typography variant="title" gutterBottom>
               Venue: {venues[0].name}
             </Typography>
-            <Typography variant="title" color="textSecondary" gutterBottom>
+            <Typography variant="title" gutterBottom>
               Location: {venues[0].address.line1}, {venues[0].city.name}
             </Typography>
             <Typography
@@ -169,27 +189,25 @@ class EventCard extends Component {
                   </li>
                 ))}
             </Typography>
-            <CardActions
-              classes={{ root: classes.actions }}
-              disableActionSpacing
-            >
-              <Button
-                className={classes.saveButton}
-                variant="contained"
-                color="secondary"
-              >
-                Track Event
-              </Button>
-              <IconButton
-                className={`${classes.icon} ${classes[this.state.expandIcon]}`}
-                onClick={this.handleExpand}
-                aria-expanded={this.state.expanded}
-                aria-label="Show more"
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            </CardActions>
           </Card>
+          <div className={classes.actionCard}>
+            <Button
+              className={classes.saveButton}
+              variant="contained"
+              color="secondary"
+              size="small"
+            >
+              Track Event
+            </Button>
+            <IconButton
+              className={`${classes.icon} ${classes[this.state.expandIcon]}`}
+              onClick={this.handleExpand}
+              aria-expanded={this.state.expanded}
+              aria-label="Show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </div>
         </div>
         <Collapse
           classes={{ wrapperInner: classes.expansion }}
@@ -199,18 +217,19 @@ class EventCard extends Component {
         >
           <CardMedia className={classes.media} image={imageSrc} />
           <CardContent className={classes.eventDetails}>
-            <Typography variant="headline">Event start time: {time}</Typography>
-            <Typography variant="headline" color="textSecondary">
+            <Typography variant="subheading">
+              Event start time: {time}
+            </Typography>
+            <Typography variant="subheading">
               {saleStatus === 'onsale' &&
                 `Ticket ${saleStatus}: ${saleStartString}`}
             </Typography>
-            <Typography variant="headline" color="textSecondary">
+            <Typography variant="title" gutterBottom>
               {genre !== 'Undefined' && `Genre:  ${genre}`}
             </Typography>
             <Typography
               className={classes.headliners}
               variant="title"
-              color="textSecondary"
               component="ul"
             >
               {headliners &&

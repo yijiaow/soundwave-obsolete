@@ -132,7 +132,7 @@ class Carousel extends Component {
           />
           <div className={classes.eventBanner}>
             <CardContent className={classes.eventContent}>
-              <Typography variant="display1">
+              <Typography variant="display1" color="textSecondary">
                 {title} <span className={classes.regionInfo}>{region}</span>
               </Typography>
               <Typography variant="subheading">{dateRange}</Typography>

@@ -5,9 +5,9 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
-const styles = {
+const styles = theme => ({
   root: {
-    color: 'red'
+    color: theme.palette.secondary.main
   },
   dropdown: {
     display: 'flex',
@@ -18,11 +18,8 @@ const styles = {
   button: {
     marginTop: 20,
     borderRadius: 20
-  },
-  location: {
-    color: 'white'
   }
-}
+})
 export class LocationForm extends Component {
   constructor(props) {
     super(props)
@@ -69,8 +66,8 @@ export class LocationForm extends Component {
     const stateString = location.state && `, ${location.state}`
     return (
       <div>
-        <Button onClick={this.handleOpen}>
-          <Typography variant="title" color="textSecondary">{`${
+        <Button className={classes.root} onClick={this.handleOpen}>
+          <Typography variant="title" color="secondary">{`${
             location.city
           } ${stateString}  ${location.zipcode}`}</Typography>
         </Button>
