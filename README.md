@@ -1,5 +1,6 @@
 # soundwave
 A singple page web application for live music enthusiasts to track concerts and festivals at specified location.
+
 **Live Demo:** [soundwave.herokuapp.com](https://glacial-wave-14606.herokuapp.com/)
 ## Usage
 `git clone https://github.com/yijiaow/soundwave.git`
