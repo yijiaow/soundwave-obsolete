@@ -5,6 +5,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "prestart": "npm run bundle",
     "start": "node server/index.js",
     "bundle": "browserify -t babelify client/index.js -o server/bundle.js",
     "watch:client": "watchify -vd -t babelify client/index.js -o server/bundle.js",
