@@ -13,7 +13,7 @@ const app = express()
 const API_KEY = process.env.TICKETMASTER_KEY
 AWS.config.update({
   region: 'us-west-1',
-  endpoint: 'http://localhost:8000'
+  endpoint: 'http://localhost:8000',
 })
 const docClient = new AWS.DynamoDB.DocumentClient()
 
@@ -23,13 +23,13 @@ app
   .use(express.static(path.join(__dirname, '/')))
   .use(bodyParser.json())
   .post('/signup', async (req, res) => {
-    const { email, password } = req.body
+    const {email, password} = req.body
     const saltRounds = 10
     try {
       const hash = await bcrypt.hash(password, saltRounds)
       const params = {
         TableName: 'Users',
-        Item: { email, hash }
+        Item: {email, hash},
       }
       docClient.put(params, err => {
         if (err) {
@@ -37,26 +37,24 @@ app
             'Unable to add user. Error JSON:',
             JSON.stringify(err, null, 2)
           )
-        }
-        else {
-          const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
-          res.status(201).json({ email, token })
+        } else {
+          const token = jwt.sign({email}, process.env.TOKEN_SECRET)
+          res.status(201).json({email, token})
         }
       })
-    }
-    catch (err) {
-      res.status(500).json({ error: `Internal Server Error: ${err}` })
+    } catch (err) {
+      res.status(500).json({error: `Internal Server Error: ${err}`})
     }
   })
   .post('/signin', (req, res) => {
-    const { email, password } = req.body
+    const {email, password} = req.body
     console.log(email)
     const user = docClient.get(
       {
         TableName: 'Users',
-        Key: { email },
+        Key: {email},
         ProjectionExpression: '#h',
-        ExpressionAttributeNames: { '#h': 'hash' }
+        ExpressionAttributeNames: {'#h': 'hash'},
       },
       async (err, data) => {
         if (err) {
@@ -64,23 +62,20 @@ app
             'Unable to find item. Error JSON:',
             JSON.stringify(err, null, 2)
           )
-          res.status(500).json({ error: `Internal Server Error: ${err}` })
-        }
-        else {
+          res.status(500).json({error: `Internal Server Error: ${err}`})
+        } else {
           const passwordHash = data.Item.hash
           try {
             const isMatch = await bcrypt.compare(password, passwordHash)
             if (isMatch) {
-              const token = jwt.sign({ email }, process.env.TOKEN_SECRET)
-              res.status(201).json({ email, token })
+              const token = jwt.sign({email}, process.env.TOKEN_SECRET)
+              res.status(201).json({email, token})
+            } else {
+              res.status(401).json({error: 'Unauthorized'})
             }
-            else {
-              res.status(401).json({ error: 'Unauthorized' })
-            }
-          }
-          catch (err) {
+          } catch (err) {
             console.error(err)
-            res.status(500).json({ error: 'Internal Server Error' })
+            res.status(500).json({error: 'Internal Server Error'})
           }
         }
       }
@@ -107,17 +102,17 @@ app
     docClient.update(
       {
         TableName: 'Users',
-        Key: { email: email },
+        Key: {email: email},
         UpdateExpression:
           'SET #attrName = list_append(if_not_exists(#attrName, :new_list), :attrValue)',
         ExpressionAttributeNames: {
-          '#attrName': 'events'
+          '#attrName': 'events',
         },
         ExpressionAttributeValues: {
           ':new_list': [],
-          ':attrValue': [event]
+          ':attrValue': [event],
         },
-        ReturnValues: 'UPDATED_NEW'
+        ReturnValues: 'UPDATED_NEW',
       },
       (err, data) => {
         if (err) {
@@ -125,9 +120,8 @@ app
             'Unable to update record. Error JSON:',
             JSON.stringify(err, null, 2)
           )
-          res.status(500).json({ error: `Internal Server Error: ${err}` })
-        }
-        else {
+          res.status(500).json({error: `Internal Server Error: ${err}`})
+        } else {
           res.status(200).json(data)
         }
       }
@@ -150,25 +144,24 @@ function authorize(req, res, next) {
   const token = req.body.user.token
   if (!token) {
     return res.status(403).json({
-      error: 'User not signed in'
+      error: 'User not signed in',
     })
   }
   try {
     req.user = jwt.verify(token, process.env.TOKEN_SECRET)
     next()
-  }
-  catch (err) {
+  } catch (err) {
     if (
       err instanceof jwt.TokenExpiredError ||
       err instanceof jwt.JsonWebTokenError
     ) {
       return res.status(403).json({
-        error: 'Forbidden'
+        error: 'Forbidden',
       })
     }
     console.error(err)
     res.status(500).json({
-      error: 'Internal Server Error'
+      error: 'Internal Server Error',
     })
   }
 }
