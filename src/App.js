@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
-import {ApolloClient} from 'apollo-boost'
+import ApolloClient from 'apollo-boost'
 import {ApolloProvider} from 'react-apollo'
-import {BrowserRouter, Switch, Route} from 'react-router'
+import {BrowserRouter, Switch} from 'react-router-dom'
 import Unauthorized from './routes/Unauthorized'
 import Authorized from './routes/Authorized.js'
 
 import './App.css'
 
 const client = new ApolloClient({
-  uri: '',
+  uri: 'http://localhost:4000/graphql',
 })
 
 class App extends Component {
